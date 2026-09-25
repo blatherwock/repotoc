@@ -1,0 +1,42 @@
+[project]
+name = "repodoc"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = [
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "ty>=0.0.82",
+]
+
+[tool.ruff.lint]
+select = [
+    #"E4", "E7", "E9", # pycodestyle
+    "E", # pycodestyle error
+    "W", # pycodestyle warning
+    "F", # Pyflakes
+    "I", # isort
+    "N", # pep8-naming
+    "PL", # Pylint
+    "D", # pydocstyle
+    "RUF", # ruff specific rules
+    "B", # flake8-bugbear
+    "A", # flake8-builtins
+    "C", # flake8-comprehensions
+    "DTZ", # flake8-datetimez
+    "EM", # flake8-errmsg
+    "G", # flake8-logging-format
+    #"PT", # flake8-pytest-style
+    "Q", # flake8-quotes
+    "RET", # flake8-return
+    "SLF", # flake8-self
+    "SIM", # flake8-simplify
+    "TC", # flake8-type-checking
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "PERF", # Perflint
+    "FURB", # refurb
+]
