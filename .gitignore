@@ -1,0 +1,15 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# Test and tool caches
+.coverage
+.pytest_cache/
+.ruff_cache/
+
+# Virtual environment
+.venv/
+
+# Build artifacts
+dist/
+build/

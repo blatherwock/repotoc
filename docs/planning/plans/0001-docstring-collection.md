@@ -8,16 +8,16 @@ Implements `docs/planning/specs/0001-docstring-collection.md`: the collection la
 
 ### Phase 1: Foundations
 
-- [ ] Task 1: Package skeleton and gates
+- [x] Task 1: Package skeleton and gates
   - Add the uv_build build backend and package config to `pyproject.toml`; create `src/repodoc/__init__.py`, `models.py`, and `collect.py`. Add `pytest-cov` and `coverage` to the dev group; configure `[tool.coverage.run]` (branch on, source `src/repodoc`) and `[tool.coverage.report]` (fail under 100, show missing); set pytest `addopts` so every pytest run enforces the gate. Add a smoke test importing the package so the gate has something to measure.
   - Satisfies spec scenarios: enables all; enforces the coverage-gate and build-backend decisions.
-- [ ] Task 2: AST boundary enforcement
+- [x] Task 2: AST boundary enforcement
   - Add ruff TID251 `banned-api` banning `ast`, with a per-file exception for `src/repodoc/collect.py`. Verify positively (clean gate) and negatively (a temporary `import ast` in `models.py` must fail the gate, then revert).
   - Satisfies spec scenarios: enforces the "Models are resolved dataclasses, not AST nodes" decision.
 
 ### Checkpoint: Foundations
 
-- [ ] `just check` passes; `just test` runs green at 100% coverage; `uv run python -c "import repodoc"` succeeds.
+- [x] `just check` passes; `just test` runs green at 100% coverage; `uv run python -c "import repodoc"` succeeds.
 
 ### Phase 2: Models and collector
 
