@@ -81,7 +81,7 @@ dev = [
 dev = [
     { name = "pytest" },
     { name = "ruff" },
-    { name = "ty", specifier = ">=0.0.82" },
+    { name = "ty", specifier = ">=0.0.84" },
 ]
 
 [[package]]
