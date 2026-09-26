@@ -23,16 +23,19 @@ The output directory is owned by the tool: generation writes the current file se
 - **Truncation is per kind.** Three booleans reduce module, class, or function docstrings to their first line independently. A single global switch cannot express differing noise tolerance per kind; module docstrings are usually longer than a useful function summary.
 - **Raw docstring text in fenced blocks.** Docstrings pass through unmodified inside fenced code blocks; the fence extends when the text contains a fence marker. No Google, NumPy, or reST convention parsing. Rejected: structured parsing (conventions vary across repos and the consumer tolerates raw text).
 - **Hand-rolled Markdown emission, no Markdown library.** The Markdown surface is four constructs: headings, fenced code blocks, links, and bullet lists. All f-string work. Rejected: a Markdown emitter library (a dependency carrying constructs we do not use, and the mainstream Markdown packages are parsers, the wrong direction for emission). Hand-rolling also keeps byte-level determinism under direct control, which `--check` (0003) depends on.
-- **Signatures as code lines.** Each member renders as a fenced Python signature line followed by its docstring block; undocumented members render as bare signature lines.
+- **Signatures as code lines.** Each member renders as a fenced Python signature line followed by its docstring block; undocumented members render as bare signature lines. Decorators render above the signature line in source order, as in the source.
 - **Byte-determinism.** The same models and config always produce byte-identical files. Required for the `--check` mode (0003) to be meaningful.
 - **The output directory is tool-owned.** Generation deletes `.md` files under the output directory that the current run does not produce. Rejected: additive writes only (a renamed module would leave a stale file forever).
 
 ## Testing strategy
 
+Every behavior below is exercised by unit tests; the package is held at 100% line and branch coverage by the coverage gate defined in `0001-docstring-collection.md`.
+
 ### Rendering: normal operation
 
 - When a module model is rendered, its doc file states the source path, renders the module docstring per truncation config, then the outline in model order.
 - When a member is public, or is `__init__` or `__new__`, it renders; when it is underscore-prefixed and the private flag is off, it is omitted.
+- When a member carries decorators, they render above its signature line in source order.
 - When a docstring kind has truncation on, only its first line renders; other kinds render in full.
 - When a directory contains doc files or child indexes, its `index.md` lists modules and subdirectories by path, each entry linking to the doc file and the source file.
 - When the same models are rendered twice, the outputs are byte-identical.

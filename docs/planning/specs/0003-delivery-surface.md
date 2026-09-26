@@ -21,6 +21,8 @@ Exit codes: 0 on success and on fresh checks; 1 on stale checks, with the list o
 
 ## Testing strategy
 
+Every behavior below is exercised by unit tests; the package is held at 100% line and branch coverage by the coverage gate defined in `0001-docstring-collection.md`.
+
 ### CLI: normal operation
 
 - When `repodoc <sources...>` runs, the artifact folder is regenerated under the output directory (default `docs/repodoc`).
