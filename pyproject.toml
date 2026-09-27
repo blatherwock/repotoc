@@ -68,3 +68,4 @@ convention = "pep257"
 
 [tool.ruff.lint.per-file-ignores]
 "src/repodoc/collect.py" = ["TID251"]
+"src/repodoc/signatures.py" = ["TID251"]

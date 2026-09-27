@@ -21,19 +21,19 @@ Implements `docs/planning/specs/0001-docstring-collection.md`: the collection la
 
 ### Phase 2: Models and collector
 
-- [ ] Task 3: Model dataclasses
+- [x] Task 3: Model dataclasses
   - Implement frozen dataclasses in `models.py` per the spec model shape: `Module(source_path, docstring, members)`, `Class(name, signature, docstring, decorators, members)`, `Function(name, signature, docstring, decorators)`. Plain strings and lists only; no AST nodes.
   - Satisfies spec scenarios: model shape requirement [proposed]; foundation for all collection scenarios.
-- [ ] Task 4: Signature reconstruction
+- [x] Task 4: Signature reconstruction
   - Build the signature string for `def`, `async def`, and `class` definitions: decorators extracted in source order as written expressions, signature as the normalized source form of the definition line (prefer `ast.unparse`; fall back to manual reconstruction from `node.args` and `node.returns` if the unparsed form is malformed). Cover posonly, kwonly, vararg, kwarg, defaults, annotations, return annotations, bases, and keywords such as `metaclass`.
   - Satisfies spec scenarios: Collection normal operation (signatures, decorators); Collection edge cases (stacked decorators, decorator arguments).
-- [ ] Task 5: Collection walker
+- [x] Task 5: Collection walker
   - Walk the roots with `pathlib`, apply the skip list (hidden directories, `__pycache__`, `venv`, `.venv`, `build`, `dist`, `node_modules`), dedupe files reachable through overlapping roots, order results by path. Parse each file with `ast.parse`; module docstring via `ast.get_docstring`; visit module-level and class-level `FunctionDef`, `AsyncFunctionDef`, and `ClassDef` in source order; never descend into function bodies; ignore attribute-style string literals. Raise a parse error carrying path and message on syntax errors; raise an error naming a missing root. Public API: `collect(roots)`.
   - Satisfies spec scenarios: Collection normal operation; Collection failure handling; Collection edge cases; Library API (IPO).
 
 ### Checkpoint: Collector complete
 
-- [ ] `just test` green at 100% line and branch coverage across all collection scenarios; `just check` clean.
+- [x] `just test` green at 100% line and branch coverage across all collection scenarios; `just check` clean.
 
 ## Risks and mitigations
 
