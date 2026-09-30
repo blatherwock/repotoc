@@ -72,6 +72,40 @@ def test_module_docstring_is_attached(tmp_path: Path) -> None:
     assert modules[0].docstring == "Module doc."
 
 
+def test_docstrings_are_stripped_of_surrounding_whitespace(tmp_path: Path) -> None:
+    """Collected docstrings carry no leading or trailing whitespace."""
+    _write(
+        tmp_path,
+        "m.py",
+        '''"""  Module doc.  """
+
+
+def first():
+    """  First.   """
+
+
+class Second:
+    """Second.  """
+''',
+    )
+
+    modules = collect([tmp_path])
+
+    (first, second) = modules[0].members
+    assert modules[0].docstring == "Module doc."
+    assert first.docstring == "First."
+    assert second.docstring == "Second."
+
+
+def test_whitespace_only_docstring_counts_as_undocumented(tmp_path: Path) -> None:
+    """A docstring holding only whitespace is stored as None."""
+    _write(tmp_path, "m.py", 'def first():\n    """   """\n')
+
+    modules = collect([tmp_path])
+
+    assert modules[0].members[0].docstring is None
+
+
 def test_module_without_docstring_has_none(tmp_path: Path) -> None:
     """A module without a docstring yields a model without one."""
     _write(tmp_path, "m.py", "x = 1\n")

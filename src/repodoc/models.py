@@ -12,7 +12,8 @@ class Function:
     Attributes:
         name: The function name as written in source.
         signature: The normalized source form of the definition line.
-        docstring: The dedented docstring, or None when the function has none.
+        docstring: The dedented docstring, stripped of surrounding whitespace, or None
+            when the function has none.
         decorators: The decorator expressions as written, in source order.
     """
 
@@ -29,7 +30,8 @@ class Class:
     Attributes:
         name: The class name as written in source.
         signature: The normalized source form of the definition line.
-        docstring: The dedented docstring, or None when the class has none.
+        docstring: The dedented docstring, stripped of surrounding whitespace, or None
+            when the class has none.
         decorators: The decorator expressions as written, in source order.
         members: The classes and functions defined in the class body, in source order.
     """
@@ -47,7 +49,8 @@ class Module:
 
     Attributes:
         source_path: The path to the source file.
-        docstring: The dedented module docstring, or None when the module has none.
+        docstring: The dedented module docstring, stripped of surrounding whitespace, or
+            None when the module has none.
         members: The classes and functions defined at module level, in source order.
     """
 

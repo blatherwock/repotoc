@@ -76,9 +76,20 @@ def _collect_module(path: Path) -> Module:
         raise ParseError(str(path), error.msg) from error
     return Module(
         source_path=str(path),
-        docstring=ast.get_docstring(tree, clean=True),
+        docstring=_docstring(tree),
         members=_collect_members(tree.body, source),
     )
+
+
+def _docstring(
+    node: ast.Module | ast.ClassDef | ast.FunctionDef | ast.AsyncFunctionDef,
+) -> str | None:
+    """Return the node's docstring stripped of surrounding whitespace, or None.
+
+    A docstring that is empty or whitespace-only counts as undocumented.
+    """
+    docstring = ast.get_docstring(node, clean=True)
+    return docstring.strip() if docstring else None
 
 
 def _read_source(path: Path) -> str:
@@ -105,7 +116,7 @@ def _collect_function(
     return Function(
         name=node.name,
         signature=signature(node),
-        docstring=ast.get_docstring(node, clean=True),
+        docstring=_docstring(node),
         decorators=_decorators(node, source),
     )
 
@@ -115,7 +126,7 @@ def _collect_class(node: ast.ClassDef, source: str) -> Class:
     return Class(
         name=node.name,
         signature=signature(node),
-        docstring=ast.get_docstring(node, clean=True),
+        docstring=_docstring(node),
         decorators=_decorators(node, source),
         members=_collect_members(node.body, source),
     )
