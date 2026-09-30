@@ -6,13 +6,13 @@ The collection layer turns source roots into module models: a faithful, presenta
 
 ## Requirements
 
-Collection reads Python source files with the stdlib `ast` module. Nothing is imported or executed. Models preserve the source order of definitions, and the model list is ordered by path, so downstream rendering is deterministic.
+Collection reads Python source files with the stdlib `ast` module. Nothing is imported or executed. Models preserve the source order of definitions, and the model list is ordered by path, with digit runs in path names compared numerically, so downstream rendering is deterministic.
 
 Collection covers all `*.py` files under the given roots, tests included. The walk skips hidden directories, `__pycache__`, `venv`, `.venv`, `build`, `dist`, and `node_modules`. A file reachable through two roots is collected once.
 
 Models are unfiltered: public and private members are all present, docstrings raw. Presentation (visibility filtering, truncation) belongs to rendering (0002).
 
-The model shape [proposed]:
+The model shape:
 
 ```
 Module(source_path, docstring, members)
@@ -30,11 +30,11 @@ Function(name, signature, docstring, decorators)
 - **Skip function-local definitions and attribute docstrings.** Function-local definitions are closures created at call time, not part of a module's static structure. Class bodies are collected fully, including nested classes. String literals after assignments are ignored.
 - **Models are faithful and unfiltered.** Public and private members all appear in models. Rejected: filtering at collection (makes collect config-dependent and withholds information the renderer may be asked to show).
 - **Models are resolved dataclasses, not AST nodes.** Each model is a frozen dataclass holding the signature as a normalized source string, the dedented raw docstring, and ordered member lists. Rejected: passing AST nodes between layers (couples rendering to collection internals and re-opens the walk that collection should close).
-- **The AST boundary is enforced by ruff, not a new library.** Ruff's `banned-api` rule (TID251) bans `ast` package-wide with a per-file exception for the collector module; it runs in the existing `check` gate. Rejected: import-linter (registry-verified mature and maintained, but four direct dependencies plus transitive ones to express one rule in a three-module package; becomes worth it once several import contracts exist) and a hand-rolled boundary test (duplicates what ruff already does declaratively).
+- **The AST boundary is enforced by ruff, not a new library.** Ruff's `banned-api` rule (TID251) bans `ast` package-wide with per-file exceptions for the collection modules that parse source (`collect.py` and `signatures.py`); it runs in the existing `check` gate. Rejected: import-linter (registry-verified mature and maintained, but four direct dependencies plus transitive ones to express one rule in a five-module package; becomes worth it once several import contracts exist) and a hand-rolled boundary test (duplicates what ruff already does declaratively).
 - **Coverage gate: coverage.py plus pytest-cov at 100% line and branch.** All code paths in the package are exercised by unit tests; the gate enforces 100% line and branch coverage on `src/repodoc` (branch coverage is what "all code paths exercised" means). Enforcement rides pytest itself via `addopts`, so the gate follows every test run, recipe or not. Exclusions stay minimal, such as `TYPE_CHECKING` guards. Rejected: plain coverage.py only (the gate would live solely in the test recipe; raw pytest runs would skip enforcement) and covdefaults (registry-stale, last release March 2023).
-- **Build backend: uv_build.** The package needs a PEP 517 backend so `uv sync` installs the project and `import repodoc` works without path manipulation. uv_build is the uv default, has no runtime dependencies, and expects the src layout by default (the package lives at `src/repodoc`). It is still 0.x; we accept that risk because swapping a backend is a two-line change in `pyproject.toml`. Rejected: hatchling (five transitive dependencies and capabilities far beyond a three-module package), flit-core (explicit module configuration needed for the src layout), pdm-backend (tied to the PDM ecosystem the project does not use), and setuptools (the heaviest option; nothing here needs it).
+- **Build backend: uv_build.** The package needs a PEP 517 backend so `uv sync` installs the project and `import repodoc` works without path manipulation. uv_build is the uv default, has no runtime dependencies, and expects the src layout by default (the package lives at `src/repodoc`). It is still 0.x; we accept that risk because swapping a backend is a two-line change in `pyproject.toml`. Rejected: hatchling (five transitive dependencies and capabilities far beyond a five-module package), flit-core (explicit module configuration needed for the src layout), pdm-backend (tied to the PDM ecosystem the project does not use), and setuptools (the heaviest option; nothing here needs it).
 - **Decorators are collected.** Decorator expressions are stored in source order on function and class models. Rejected: dropping them (a `@property` would read as a plain method, and framework decorators often carry API meaning).
-- **Source order within a module, path order across modules.** Members keep the order of their appearance in the source; the model list is ordered by path. Rejected: alphabetical ordering (breaks the natural reading order of a module and makes diffing against the source harder).
+- **Source order within a module, path order across modules.** Members keep the order of their appearance in the source; the model list is ordered by path, with digit runs in path names compared numerically (so `b2.py` precedes `b10.py`). Rejected: alphabetical ordering (breaks the natural reading order of a module and makes diffing against the source harder).
 - **Collection scope.** All `*.py` files under the roots, tests included. Rejected: excluding tests (agents navigate test code too) and collecting only packaged code (roots are the caller's choice).
 
 ## Testing strategy
@@ -64,7 +64,7 @@ Every behavior below is exercised by unit tests; the coverage gate (Decisions) h
 - When a string literal follows an assignment (attribute docstring style), it is ignored.
 - When a member carries stacked decorators or decorators with arguments, each expression is stored verbatim.
 
-### Library API (IPO) [proposed]
+### Library API (IPO)
 
 - Inputs: source roots as paths; the built-in skip list applies.
 - Process: walk the roots, parse each file, build models.

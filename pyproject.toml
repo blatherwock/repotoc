@@ -64,7 +64,7 @@ select = [
 convention = "pep257"
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
-"ast".msg = "import the ast module only inside src/repodoc/collect.py"
+"ast".msg = "import the ast module only inside src/repodoc/collect.py and src/repodoc/signatures.py"
 
 [tool.ruff.lint.per-file-ignores]
 "src/repodoc/collect.py" = ["TID251"]

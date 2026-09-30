@@ -12,7 +12,7 @@ Implements `docs/planning/specs/0001-docstring-collection.md`: the collection la
   - Add the uv_build build backend and package config to `pyproject.toml`; create `src/repodoc/__init__.py`, `models.py`, and `collect.py`. Add `pytest-cov` and `coverage` to the dev group; configure `[tool.coverage.run]` (branch on, source `src/repodoc`) and `[tool.coverage.report]` (fail under 100, show missing); set pytest `addopts` so every pytest run enforces the gate. Add a smoke test importing the package so the gate has something to measure.
   - Satisfies spec scenarios: enables all; enforces the coverage-gate and build-backend decisions.
 - [x] Task 2: AST boundary enforcement
-  - Add ruff TID251 `banned-api` banning `ast`, with a per-file exception for `src/repodoc/collect.py`. Verify positively (clean gate) and negatively (a temporary `import ast` in `models.py` must fail the gate, then revert).
+  - Add ruff TID251 `banned-api` banning `ast`, with per-file exceptions for `src/repodoc/collect.py` and `src/repodoc/signatures.py`. Verify positively (clean gate) and negatively (a temporary `import ast` in `models.py` must fail the gate, then revert).
   - Satisfies spec scenarios: enforces the "Models are resolved dataclasses, not AST nodes" decision.
 
 ### Checkpoint: Foundations
@@ -23,12 +23,12 @@ Implements `docs/planning/specs/0001-docstring-collection.md`: the collection la
 
 - [x] Task 3: Model dataclasses
   - Implement frozen dataclasses in `models.py` per the spec model shape: `Module(source_path, docstring, members)`, `Class(name, signature, docstring, decorators, members)`, `Function(name, signature, docstring, decorators)`. Plain strings and lists only; no AST nodes.
-  - Satisfies spec scenarios: model shape requirement [proposed]; foundation for all collection scenarios.
+  - Satisfies spec scenarios: model shape requirement; foundation for all collection scenarios.
 - [x] Task 4: Signature reconstruction
-  - Build the signature string for `def`, `async def`, and `class` definitions: decorators extracted in source order as written expressions, signature as the normalized source form of the definition line (prefer `ast.unparse`; fall back to manual reconstruction from `node.args` and `node.returns` if the unparsed form is malformed). Cover posonly, kwonly, vararg, kwarg, defaults, annotations, return annotations, bases, and keywords such as `metaclass`.
+  - Build the signature string for `def`, `async def`, and `class` definitions in `src/repodoc/signatures.py`: decorators extracted in source order as written expressions, signature as the normalized source form of the definition line (prefer `ast.unparse`; fall back to manual reconstruction from the argument, base, and type-parameter nodes if the unparsed form is malformed). Cover posonly, kwonly, vararg, kwarg, defaults, annotations, return annotations, bases, keywords such as `metaclass`, and PEP 695 type parameters.
   - Satisfies spec scenarios: Collection normal operation (signatures, decorators); Collection edge cases (stacked decorators, decorator arguments).
 - [x] Task 5: Collection walker
-  - Walk the roots with `pathlib`, apply the skip list (hidden directories, `__pycache__`, `venv`, `.venv`, `build`, `dist`, `node_modules`), dedupe files reachable through overlapping roots, order results by path. Parse each file with `ast.parse`; module docstring via `ast.get_docstring`; visit module-level and class-level `FunctionDef`, `AsyncFunctionDef`, and `ClassDef` in source order; never descend into function bodies; ignore attribute-style string literals. Raise a parse error carrying path and message on syntax errors; raise an error naming a missing root. Public API: `collect(roots)`.
+  - Walk the roots with `pathlib`, apply the skip list (hidden directories, `__pycache__`, `venv`, `.venv`, `build`, `dist`, `node_modules`), dedupe files reachable through overlapping roots, order results by natural path order (digit runs compared numerically). Parse each file with `ast.parse`; module docstring via `ast.get_docstring`; visit module-level and class-level `FunctionDef`, `AsyncFunctionDef`, and `ClassDef` in source order; never descend into function bodies; ignore attribute-style string literals. Raise a parse error carrying path and message on syntax errors; raise an error naming a missing root; the error types live in `src/repodoc/errors.py`. Public API: `collect(roots)`.
   - Satisfies spec scenarios: Collection normal operation; Collection failure handling; Collection edge cases; Library API (IPO).
 
 ### Checkpoint: Collector complete
