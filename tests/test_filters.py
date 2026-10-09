@@ -1,7 +1,9 @@
 """Tests for the rendering presentation filters and render config."""
 
+import pytest
+
 from repodoc.filters import Filters, RenderConfig
-from repodoc.models import Class, Function, Module
+from repodoc.models import Class, Function
 
 
 def _function(name: str, docstring: str | None = "Doc.") -> Function:
@@ -26,25 +28,40 @@ def _class(
     )
 
 
-def _config(**overrides: bool) -> RenderConfig:
-    """Build a config with default output and the given flag overrides."""
-    return RenderConfig(output="out", **overrides)
+def _filters(config: RenderConfig | None = None) -> Filters:
+    """Build filters bound to the given config, or a default one."""
+    if config is None:
+        config = RenderConfig(output="out")
+    return Filters(config)
 
 
-def _filters(**overrides: bool) -> Filters:
-    """Build filters bound to a config with the given flag overrides."""
-    return Filters(_config(**overrides))
-
-
-def test_config_defaults_are_full_docstrings_and_private_members_hidden() -> None:
-    """A fresh config hides private members and truncates nothing."""
-    config = _config()
+def test_config_defaults_show_the_full_outline() -> None:
+    """A fresh config caps nothing, hides privates, and shows signatures."""
+    config = RenderConfig(output="out")
 
     assert config.output == "out"
-    assert config.include_private is False
-    assert config.truncate_module is False
-    assert config.truncate_class is False
-    assert config.truncate_function is False
+    assert config.file_member_depth is None
+    assert config.file_include_privates is False
+    assert config.file_include_signatures is True
+    assert config.toc_max_depths == (6,)
+
+
+def test_empty_toc_max_depths_are_rejected() -> None:
+    """An empty per-level depth list fails validation."""
+    with pytest.raises(ValueError, match="toc_max_depths"):
+        RenderConfig(output="out", toc_max_depths=())
+
+
+def test_non_positive_toc_max_depths_are_rejected() -> None:
+    """A per-level depth below one fails validation."""
+    with pytest.raises(ValueError, match="toc_max_depths"):
+        RenderConfig(output="out", toc_max_depths=(6, 0))
+
+
+def test_non_positive_file_member_depth_is_rejected() -> None:
+    """A member depth below one fails validation."""
+    with pytest.raises(ValueError, match="file_member_depth"):
+        RenderConfig(output="out", file_member_depth=0)
 
 
 def test_public_names_are_visible() -> None:
@@ -69,9 +86,9 @@ def test_init_and_new_are_visible_without_the_private_flag() -> None:
     assert filters.is_visible("__new__") is True
 
 
-def test_include_private_makes_underscore_names_visible() -> None:
+def test_file_include_privates_makes_underscore_names_visible() -> None:
     """With the private flag, underscore-prefixed names pass the filter."""
-    filters = _filters(include_private=True)
+    filters = _filters(RenderConfig(output="out", file_include_privates=True))
 
     assert filters.is_visible("_helper") is True
     assert filters.is_visible("__init__") is True
@@ -127,64 +144,3 @@ def test_filtered_class_keeps_its_other_fields() -> None:
     assert members[0].signature == "class C(Base):"
     assert members[0].docstring == "Class doc."
     assert members[0].decorators == ["dataclass"]
-
-
-def _module(docstring: str | None) -> Module:
-    """Build a module model with the given docstring."""
-    return Module(source_path="mod.py", docstring=docstring, members=[])
-
-
-def test_truncation_off_passes_docstring_through() -> None:
-    """With no truncation flag, a docstring renders in full."""
-    filters = _filters()
-    function = _function("f", docstring="First line.\n\n    Second line.")
-
-    result = filters.truncate_docstring(function)
-
-    assert result == "First line.\n\n    Second line."
-
-
-def test_truncation_selects_the_flag_by_model_type() -> None:
-    """Each model type selects its own truncation flag."""
-    filters = _filters(truncate_class=True)
-
-    assert filters.truncate_docstring(_class("C")) == "Class doc."
-    assert filters.truncate_docstring(_module("First.\nSecond.")) == "First.\nSecond."
-    assert (
-        filters.truncate_docstring(_function("f", docstring="First.\nSecond."))
-        == "First.\nSecond."
-    )
-
-
-def test_truncation_of_each_kind_uses_its_own_flag() -> None:
-    """Module, class, and function flags act independently."""
-    module_filters = _filters(truncate_module=True)
-    class_filters = _filters(truncate_class=True)
-    function_filters = _filters(truncate_function=True)
-
-    assert module_filters.truncate_docstring(_module("First.\nSecond.")) == "First."
-    assert (
-        class_filters.truncate_docstring(_class("C", docstring="First.\nSecond."))
-        == "First."
-    )
-    assert (
-        function_filters.truncate_docstring(_function("f", docstring="First.\nSecond."))
-        == "First."
-    )
-
-
-def test_truncation_takes_only_the_first_line() -> None:
-    """A truncated docstring renders its first line only."""
-    filters = _filters(truncate_function=True)
-
-    assert (
-        filters.truncate_docstring(_function("f", docstring="First.\nSecond."))
-        == "First."
-    )
-
-
-def test_missing_docstring_stays_missing_through_truncation() -> None:
-    """A None docstring is None whether or not truncation applies."""
-    filters = _filters(truncate_function=True)
-
-    assert filters.truncate_docstring(_function("f", docstring=None)) is None

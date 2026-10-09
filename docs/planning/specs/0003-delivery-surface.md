@@ -15,6 +15,7 @@ Exit codes: 0 on success and on fresh checks; 1 on stale checks, with the list o
 - **Library-first with a thin CLI.** The importable API is the real interface; the CLI maps flags onto the same config object. Rejected: CLI only (not composable from other tools) and library only (no one-line regeneration).
 - **CLI regenerates by default; `--check` compares.** `--check` writes nothing, exits 1 listing missing, differing, or extra `.md` files in the tool-owned output directory (0002). Mirrors the `ruff format --check` pattern. Rejected: hooks that rewrite files on every run (pre-commit retries on changed files) and no check mode (stale detection would need diffing by hand).
 - **Config in `pyproject.toml`.** A `[tool.repodoc]` section parsed with stdlib `tomllib`. Every CLI flag has a config key. Rejected: a separate config file (one more file in every consuming project, no added power).
+- **`toc_max_depths` takes an int or a list.** TOML has no tuples, so the key accepts a bare int (coerced to a one-element tuple) or a list of ints, coerced to the tuple `RenderConfig` (0002) validates. Rejected: list-only (the single-depth common case reads cleaner as a bare int) and per-level subsections such as `[tool.repodoc.toc_level1]` (the levels are positional, so a list states them directly, and one key keeps every flag's one-key mapping).
 - **Sources replace, not merge.** CLI positional sources override config sources entirely. Merging would make a run's inputs depend on where it is invoked from; replacement is predictable.
 - **Ship a pre-commit hook definition.** A `.pre-commit-hooks.yaml` in this repo defines a `repodoc` hook: regenerate mode, config-driven, no filenames passed; it runs when tracked `*.py` files or `pyproject.toml` change [proposed]. Consumers wire it with one line.
 - **Python floor 3.11, development on 3.14.** `requires-python = ">=3.11"` so projects on older Pythons can install it; this repo develops on 3.14. `tomllib` availability sets the floor. No runtime dependencies.
@@ -33,7 +34,7 @@ Every behavior below is exercised by unit tests; the package is held at 100% lin
 ### CLI: failure handling
 
 - When no sources come from CLI or config, the run exits 2 with a usage message.
-- When `pyproject.toml` is invalid TOML or a `[tool.repodoc]` value has the wrong type, the run exits 2 naming the offending key.
+- When `pyproject.toml` is invalid TOML, or a `[tool.repodoc]` value has the wrong type or a value 0002 validation rejects, the run exits 2 naming the offending key.
 - When collection or generation raises, the run exits 2 with the exception's message.
 
 ### CLI: edge cases
@@ -44,7 +45,7 @@ Every behavior below is exercised by unit tests; the package is held at 100% lin
 
 ### CLI (IPO)
 
-- Inputs: positional source paths; `-o/--output`; `--check`; per-kind truncation flags; `--include-private`; extra excluded directory names. Every flag has a `[tool.repodoc]` key.
+- Inputs: positional source paths; `-o/--output`; `--check`; one flag per presentation setting (0002: `file_member_depth`, `file_include_privates`, `file_include_signatures`, `toc_max_depths`); extra excluded directory names. Every flag has a `[tool.repodoc]` key.
 - Process: resolve config, collect (0001), render (0002), write or compare.
 - Outputs: exit 0 on success or fresh check; exit 1 with a stale file list; the artifact folder written in generate mode.
 - Failure outputs: exit 2 with stderr messages for usage, config, filesystem, and parse errors.

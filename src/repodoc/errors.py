@@ -1,4 +1,4 @@
-"""Error types raised by the collection layer."""
+"""Error types raised by the collection and generation layers."""
 
 
 class CollectionError(Exception):
@@ -33,3 +33,19 @@ class MissingRootError(CollectionError):
         text = f"collection root does not exist: {root}"
         super().__init__(text)
         self.root = root
+
+
+class GenerationError(Exception):
+    """Raised when the output directory cannot be created, written, or pruned.
+
+    Attributes:
+        path: The path of the offending file or directory.
+        message: The filesystem's message.
+    """
+
+    def __init__(self, path: str, message: str) -> None:
+        """Initialize the error with the offending path and message."""
+        text = f"{path}: {message}"
+        super().__init__(text)
+        self.path = path
+        self.message = message
