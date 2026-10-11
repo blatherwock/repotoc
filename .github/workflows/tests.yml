@@ -1,0 +1,29 @@
+# Test suite: dev Python (coverage gate) and floor Python (pass-only; the
+# version-guarded branch cannot be covered there). Mirrors `just test`.
+
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.14", "3.11"]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --frozen --python ${{ matrix.python }}
+      - name: Test (coverage gate)
+        if: matrix.python == '3.14'
+        run: uv run pytest
+      - name: Test (pass-only)
+        if: matrix.python == '3.11'
+        run: uv run pytest --no-cov -q

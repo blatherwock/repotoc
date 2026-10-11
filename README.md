@@ -1,5 +1,7 @@
 # RepoTOC
 
+[![tests](https://github.com/blatherwock/repotoc/actions/workflows/tests.yml/badge.svg)](https://github.com/blatherwock/repotoc/actions/workflows/tests.yml)
+
 RepoTOC generates a Markdown table of contents for a Python repository. It collects the signature and docstring of every module, class, and function, then renders them as a folder of Markdown files that mirrors the source tree. A person or an AI agent can read this artifact to survey a codebase without opening its source files.
 
 RepoTOC parses source with the standard library `ast` module and never imports or executes it, so it is safe to run on any repository. Output is deterministic: the same source and settings always produce byte-identical files.
