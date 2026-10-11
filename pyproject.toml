@@ -6,6 +6,9 @@ license = "MIT"
 dependencies = [
 ]
 
+[project.urls]
+Repository = "https://github.com/blatherwock/repotoc"
+
 [project.scripts]
 repotoc = "repotoc.cli:main"
 
