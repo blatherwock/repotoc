@@ -2,6 +2,7 @@
 
 import ast
 import copy
+import sys
 
 # Prefixes that a normalized definition line starts with.
 _DEFINITION_PREFIXES = ("def ", "async def ", "class ")
@@ -53,7 +54,13 @@ def _reconstruct_signature(
 def _format_type_params(
     node: ast.FunctionDef | ast.AsyncFunctionDef | ast.ClassDef,
 ) -> str:
-    """Return PEP 695 type parameters as a source string, or empty when absent."""
+    """Return PEP 695 type parameters as a source string, or empty when absent.
+
+    The `type_params` attribute exists from Python 3.12; on 3.11 no node
+    carries type parameters.
+    """
+    if sys.version_info < (3, 12):  # pragma: no cover
+        return ""
     if node.type_params:
         return f"[{', '.join(ast.unparse(param) for param in node.type_params)}]"
     return ""

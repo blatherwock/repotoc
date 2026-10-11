@@ -1,5 +1,7 @@
 """Collection layer: turn source roots into module models via static AST parsing."""
 
+from __future__ import annotations
+
 import ast
 import re
 import tokenize
@@ -22,11 +24,13 @@ _SKIP_DIRECTORIES = frozenset(
 _NUMBER_SPLIT = re.compile(r"(\d+)")
 
 
-def collect(roots: Iterable[str | Path]) -> list[Module]:
+def collect(roots: Iterable[str | Path], exclude: Iterable[str] = ()) -> list[Module]:
     """Collect module models from every Python file under the given roots.
 
     Args:
         roots: Source root directories to scan.
+        exclude: Extra directory names to skip, merged with the built-in skip
+            list at walk time.
 
     Returns:
         The module models, ordered by source path.
@@ -35,13 +39,14 @@ def collect(roots: Iterable[str | Path]) -> list[Module]:
         MissingRootError: A root does not exist.
         ParseError: A source file has a syntax error.
     """
+    skip = _SKIP_DIRECTORIES | frozenset(exclude)
     files: dict[Path, Path] = {}
     for root in roots:
         root_path = Path(root)
         if not root_path.is_dir():
             raise MissingRootError(str(root_path))
         for path in root_path.rglob("*.py"):
-            if _is_skipped(path, root_path):
+            if _is_skipped(path, root_path, skip):
                 continue
             files.setdefault(path.resolve(), path)
     return [
@@ -56,15 +61,15 @@ def _path_sort_key(path: Path) -> tuple[int | str, ...]:
     )
 
 
-def _is_skipped(path: Path, root: Path) -> bool:
+def _is_skipped(path: Path, root: Path, skip: frozenset[str]) -> bool:
     """Return whether a source path sits under a skipped directory."""
     relative = path.relative_to(root)
-    return any(_is_skip_directory(part) for part in relative.parts[:-1])
+    return any(_is_skip_directory(part, skip) for part in relative.parts[:-1])
 
 
-def _is_skip_directory(name: str) -> bool:
+def _is_skip_directory(name: str, skip: frozenset[str]) -> bool:
     """Return whether a directory name is hidden or on the skip list."""
-    return name in _SKIP_DIRECTORIES or name.startswith(".")
+    return name in skip or name.startswith(".")
 
 
 def _collect_module(path: Path) -> Module:

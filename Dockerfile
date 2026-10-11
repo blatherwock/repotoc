@@ -11,6 +11,9 @@ COPY --from=ghcr.io/astral-sh/uv:python3.14-trixie /usr/local/bin/uv /usr/local/
 # Check copy was successful
 RUN uv --version
 
+# Bake the package's Python floor so test runs need no interpreter download.
+RUN uv python install 3.11
+
 ENV PI_ASK_USER_DISPLAY_MODE=inline \
     IN_CONTAINER=1 \
     UV_COMPILE_BYTECODE=1 \
@@ -26,7 +29,7 @@ WORKDIR /workspace
 
 # For python development
 # Install python project dependencies
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --no-install-project
 
 # Copy the rest of the project

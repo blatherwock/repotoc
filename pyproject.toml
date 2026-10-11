@@ -1,9 +1,12 @@
 [project]
 name = "repodoc"
 version = "0.1.0"
-requires-python = "==3.14.*"
+requires-python = ">=3.11"
 dependencies = [
 ]
+
+[project.scripts]
+repodoc = "repodoc.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12,<0.13"]
@@ -20,7 +23,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov"
+addopts = "--cov=src/repodoc"
 
 [tool.coverage.run]
 branch = true

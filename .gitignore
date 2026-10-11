@@ -7,8 +7,9 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# Virtual environment
+# Virtual environments
 .venv/
+.venv-*/
 
 # Build artifacts
 dist/

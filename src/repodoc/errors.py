@@ -1,4 +1,20 @@
-"""Error types raised by the collection and generation layers."""
+"""Error types raised by the config, collection, and generation layers."""
+
+
+class ConfigError(Exception):
+    """Raised when the config is invalid.
+
+    Attributes:
+        key: The offending config key, or the path of the offending file.
+        message: The problem with the key's value.
+    """
+
+    def __init__(self, key: str, message: str) -> None:
+        """Initialize the error with the offending key and message."""
+        text = f"{key}: {message}"
+        super().__init__(text)
+        self.key = key
+        self.message = message
 
 
 class CollectionError(Exception):

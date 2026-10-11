@@ -1,5 +1,8 @@
 """Tests for the collection layer."""
 
+from __future__ import annotations
+
+import sys
 from typing import TYPE_CHECKING
 
 import pytest
@@ -309,6 +312,32 @@ def test_skip_listed_directories_are_skipped(tmp_path: Path, directory: str) -> 
     assert [module.source_path for module in modules] == [str(tmp_path / "keep.py")]
 
 
+def test_excluded_directories_merge_with_the_builtin_skip_list(
+    tmp_path: Path,
+) -> None:
+    """Extra excluded names skip at walk time and the built-ins stay skipped."""
+    _write(tmp_path, "generated/junk.py", "")
+    _write(tmp_path, "__pycache__/junk.py", "")
+    _write(tmp_path, "keep.py", "")
+
+    modules = collect([tmp_path], exclude=["generated"])
+
+    assert [module.source_path for module in modules] == [str(tmp_path / "keep.py")]
+
+
+def test_exclude_defaults_keep_existing_calls_unchanged(tmp_path: Path) -> None:
+    """Without `exclude`, every non-hidden directory still gets scanned."""
+    _write(tmp_path, "generated/keep.py", "")
+    _write(tmp_path, "root.py", "")
+
+    modules = collect([tmp_path])
+
+    assert [module.source_path for module in modules] == [
+        str(tmp_path / "generated" / "keep.py"),
+        str(tmp_path / "root.py"),
+    ]
+
+
 def test_file_reachable_through_overlapping_roots_is_collected_once(
     tmp_path: Path,
 ) -> None:
@@ -351,6 +380,16 @@ def test_signature_falls_back_when_unparse_is_malformed(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     """A malformed unparsed definition falls back to manual reconstruction."""
+    # PEP 695 generic syntax parses from Python 3.12 only.
+    generics = (
+        """class Gen[T: Bound]:
+    ...
+def generic[T](x: T) -> T:
+    ...
+"""
+        if sys.version_info >= (3, 12)
+        else ""
+    )
     _write(
         tmp_path,
         "m.py",
@@ -358,11 +397,9 @@ def test_signature_falls_back_when_unparse_is_malformed(
     ...
 class D:
     ...
-class Gen[T: Bound]:
-    ...
-def sync(a=1) -> int:
-    ...
-def generic[T](x: T) -> T:
+"""
+        + generics
+        + """def sync(a=1) -> int:
     ...
 async def aio():
     ...
@@ -384,11 +421,8 @@ async def aio():
 
     (module,) = collect([tmp_path])
 
-    assert [member.signature for member in module.members] == [
-        "class C(Base, metaclass=Meta):",
-        "class D:",
-        "class Gen[T: Bound]:",
-        "def sync(a=1) -> int:",
-        "def generic[T](x: T) -> T:",
-        "async def aio():",
-    ]
+    expected = ["class C(Base, metaclass=Meta):", "class D:"]
+    if sys.version_info >= (3, 12):
+        expected += ["class Gen[T: Bound]:", "def generic[T](x: T) -> T:"]
+    expected += ["def sync(a=1) -> int:", "async def aio():"]
+    assert [member.signature for member in module.members] == expected

@@ -15,6 +15,9 @@ container_prefix := if in_container == "1" { "" } else { docker_run + " " + imag
 host_only_error  := if in_container == "1" { "echo 'error: run this on the host, not inside the container' >&2; exit 1" } else { "true" }
 require_image    := if in_container == "1" { "true" } else { "docker image inspect " + image + " > /dev/null 2>&1 || { echo 'error: image " + image + " not found; run `just build` first' >&2; exit 1; }" }
 
+# The package's Python floor (requires-python), tested alongside the dev interpreter.
+floor_python := "3.11"
+
 # List available recipes.
 default:
     @just --list
@@ -39,9 +42,13 @@ shell: _require-image
     @{{host_only_error}}
     @{{docker_run}} -v "$HOME/.pi/agent:/root/.pi/agent" {{image}} bash || [ $? -eq 130 ]
 
-# Run the test suite with pytest.
+# Run the test suite with pytest on the dev Python (coverage gate) and on the
+# floor Python (pass-only; the version-guarded branch cannot be covered there).
 test *args: _require-image
+    @echo "== dev python (3.14): coverage gate =="
     @{{container_prefix}}uv run pytest {{args}}
+    @echo "== floor python ({{floor_python}}): pass-only =="
+    @{{container_prefix}}env UV_PROJECT_ENVIRONMENT=.venv-{{floor_python}} uv run --python {{floor_python}} pytest --no-cov -q {{args}}
 
 # Apply fixes: format code and fix safe lint violations.
 fix *args: _require-image
