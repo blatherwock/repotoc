@@ -2,7 +2,7 @@
 
 set shell := ["bash", "-cu"]
 
-image := "repodoc:latest"
+image := "repotoc:latest"
 
 # True when running inside the project container (set by the Dockerfile).
 in_container := `[ "${IN_CONTAINER:-}" = "1" ] && echo 1 || echo 0`

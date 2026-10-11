@@ -1,4 +1,4 @@
-"""Config resolution: defaults, the `[tool.repodoc]` section, and CLI overlays."""
+"""Config resolution: defaults, the `[tool.repotoc]` section, and CLI overlays."""
 
 from __future__ import annotations
 
@@ -7,8 +7,8 @@ from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from repodoc.errors import ConfigError
-from repodoc.filters import RenderConfig
+from repotoc.errors import ConfigError
+from repotoc.filters import RenderConfig
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 class Config:
     """The effective settings for one run.
 
-    Every field is a `[tool.repodoc]` key and a CLI flag. The presentation
+    Every field is a `[tool.repotoc]` key and a CLI flag. The presentation
     fields mirror `RenderConfig`; `sources` and `exclude` drive collection.
 
     Attributes:
@@ -33,7 +33,7 @@ class Config:
     """
 
     sources: tuple[str, ...] = ()
-    output: str = "docs/repodoc"
+    output: str = "docs/repotoc"
     file_member_depth: int | None = None
     file_include_privates: bool = False
     file_include_signatures: bool = True
@@ -75,7 +75,7 @@ class PartialConfig:
 
 
 def load_config(path: Path | None = None) -> Config:
-    """Load config from the `[tool.repodoc]` section of a pyproject file.
+    """Load config from the `[tool.repotoc]` section of a pyproject file.
 
     Args:
         path: The pyproject file to read; None reads `pyproject.toml` in the
@@ -99,11 +99,11 @@ def load_config(path: Path | None = None) -> Config:
     tool = data.get("tool")
     if not isinstance(tool, dict):
         return Config()
-    section = tool.get("repodoc")
+    section = tool.get("repotoc")
     if section is None:
         return Config()
     if not isinstance(section, dict):
-        _expected("[tool.repodoc]", "a table", section)
+        _expected("[tool.repotoc]", "a table", section)
     return _config_from_section(section)
 
 
@@ -128,7 +128,7 @@ def merge(base: Config, overrides: PartialConfig) -> Config:
 
 
 def _config_from_section(section: Mapping[str, object]) -> Config:
-    """Build a config from a `[tool.repodoc]` section, validating every key."""
+    """Build a config from a `[tool.repotoc]` section, validating every key."""
     config = Config()
     for key, value in section.items():
         parser = _PARSERS.get(key)

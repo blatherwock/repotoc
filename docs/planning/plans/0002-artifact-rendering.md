@@ -27,7 +27,7 @@ Implements `docs/planning/specs/0002-artifact-rendering.md`: module models becom
   - For each `Module`: state the source path as a heading, render the module docstring as a blockquote (per truncation config), then outline members in model order. Each member renders as a section: a heading naming it (module-level members H2, one level deeper per enclosing class, clamped at H6), its docstring as a blockquote, then its source as a fenced Python block with decorator lines above the signature line. The fence extends past any backtick run inside the text. Undocumented members render heading and source block only. Markdown in docstrings passes through unchanged.
   - Satisfies spec scenarios: Rendering normal operation (doc file structure, headings, decorators, truncation); Rendering edge cases (Markdown passthrough, fence extension).
 - [x] Task 4: Index files
-  - Generate one `repodoc_index.md` per directory containing doc files, child indexes, or an `__init__.py` docstring. The index renders the folder's `__init__.py` docstring in full as a blockquote under the title (regardless of truncation config), then the folder contents as a nested list: entries prefixed `file: ` or `dir: `, each linking to the doc file (or child index) and the source file via relative paths, and ending with `: <first line>`, the target's first docstring line (a module's own docstring; a directory takes its `__init__.py` docstring; no docstring, no suffix). An `__init__.py` without visible members gets no doc file and no `file: ` entry. List depth comes from `RenderConfig.index_depths` (default `(6,)`): position 1 sets the root index's depth, each later position sets the next level's, and the last extends deeper; a directory at the last level is listed but not expanded. The root index is the scanning entry point.
+  - Generate one `repotoc_index.md` per directory containing doc files, child indexes, or an `__init__.py` docstring. The index renders the folder's `__init__.py` docstring in full as a blockquote under the title (regardless of truncation config), then the folder contents as a nested list: entries prefixed `file: ` or `dir: `, each linking to the doc file (or child index) and the source file via relative paths, and ending with `: <first line>`, the target's first docstring line (a module's own docstring; a directory takes its `__init__.py` docstring; no docstring, no suffix). An `__init__.py` without visible members gets no doc file and no `file: ` entry. List depth comes from `RenderConfig.index_depths` (default `(6,)`): position 1 sets the root index's depth, each later position sets the next level's, and the last extends deeper; a directory at the last level is listed but not expanded. The root index is the scanning entry point.
   - Satisfies spec scenarios: Rendering normal operation (index structure, nesting, depth, links, summaries, `__init__` handling); Rendering edge cases (missing docstrings, empty directories).
 - [x] Task 5: Determinism
   - Guarantee byte-identical output for the same models and config: no timestamps, no environment-derived text, stable ordering. Test by rendering twice and comparing bytes.
@@ -43,19 +43,19 @@ Implements `docs/planning/specs/0002-artifact-rendering.md`: module models becom
   - Write the rendered file set into the output directory, creating it when missing; delete `.md` files under the output directory that the current run does not produce; return a report of written and deleted paths; filesystem errors fail with the offending path.
   - Satisfies spec scenarios: Output normal operation; Output failure handling; Library API (IPO) outputs and failure outputs.
 - [x] Task 7: Dogfood
-  - Generate repodoc's own artifact folder from `src` into `docs/repodoc` via a library call; inspect manually. Do not commit unless decided.
+  - Generate repotoc's own artifact folder from `src` into `docs/repotoc` via a library call; inspect manually. Do not commit unless decided.
   - Satisfies spec scenarios: end-to-end proof of the spec objective.
 
 ### Checkpoint: Generation
 
-- [x] `just test` green at 100% coverage; `just check` clean; `docs/repodoc` exists and mirrors `src` (left uncommitted pending the open question below).
+- [x] `just test` green at 100% coverage; `just check` clean; `docs/repotoc` exists and mirrors `src` (left uncommitted pending the open question below).
 
 ### Addendum: render package (post-phase-2 review)
 
 May run before or after phase 3; it is a refactor with no behavior change.
 
 - [x] Task 8: Split `render.py` into a package
-  - Turn `src/repodoc/render.py` into the `render` package. `file_renderer.py` holds doc file rendering; `index_renderer.py` holds index rendering; `markdown.py` holds the Markdown emission helpers (headings, fences, blockquotes, link and list lines) with no knowledge of the models; `paths.py` holds doc-path and source-link computation; `render/__init__.py` exposes the public `render()` entry point. `filters.py` and `models.py` stay top-level single modules. Mirror the split in `tests/render/`.
+  - Turn `src/repotoc/render.py` into the `render` package. `file_renderer.py` holds doc file rendering; `index_renderer.py` holds index rendering; `markdown.py` holds the Markdown emission helpers (headings, fences, blockquotes, link and list lines) with no knowledge of the models; `paths.py` holds doc-path and source-link computation; `render/__init__.py` exposes the public `render()` entry point. `filters.py` and `models.py` stay top-level single modules. Mirror the split in `tests/render/`.
   - Satisfies: emission isolated from traversal and content decisions; no behavior change (rendered outputs byte-identical to the pre-split output).
 
 ### Checkpoint: render package
@@ -90,7 +90,7 @@ Dogfooding in an editor surfaced that directory entries linked to source directo
 
 ### Checkpoint: directory source links
 
-- [x] `just test` green at 100% coverage; `just check` clean; `docs/repodoc` regenerated.
+- [x] `just test` green at 100% coverage; `just check` clean; `docs/repotoc` regenerated.
 
 ## Risks and mitigations
 
@@ -98,11 +98,11 @@ Dogfooding in an editor surfaced that directory entries linked to source directo
 |------|--------|------------|
 | Backtick runs inside fenced source blocks break the code block | Med | The fence-extension function picks a longer fence than any backtick run in the text; tested against pathological decorator string literals. Docstrings are blockquotes and cannot break the emission |
 | Relative links to source files are wrong at nesting depths | Med | Unit-test the path computation at several depths |
-| Pruning deletes user files if output points at the wrong directory | High | Owned-directory contract is spec'd; default output is `docs/repodoc`; prune only `.md` files; the generation report lists every deletion |
+| Pruning deletes user files if output points at the wrong directory | High | Owned-directory contract is spec'd; default output is `docs/repotoc`; prune only `.md` files; the generation report lists every deletion |
 
 ## Open questions
 
-- Should this repository commit its own generated `docs/repodoc` folder? Affects the dogfood checkpoint only; decide at review.
+- Should this repository commit its own generated `docs/repotoc` folder? Affects the dogfood checkpoint only; decide at review.
 
 ## Related documents
 

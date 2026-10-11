@@ -1,6 +1,6 @@
 """Model builders shared by the rendering tests."""
 
-from repodoc.models import Class, Function, Module
+from repotoc.models import Class, Function, Module
 
 
 def function(

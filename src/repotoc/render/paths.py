@@ -7,7 +7,7 @@ from pathlib import PurePosixPath
 
 # Name of the index file inside every rendered directory; chosen to be unlikely
 # to collide with a file already in a documented repository.
-_INDEX_NAME = "repodoc_index.md"
+_INDEX_NAME = "repotoc_index.md"
 
 
 def is_init(source_path: str) -> bool:

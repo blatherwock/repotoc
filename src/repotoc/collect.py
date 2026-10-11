@@ -8,9 +8,9 @@ import tokenize
 from pathlib import Path
 from typing import TYPE_CHECKING, cast
 
-from repodoc.errors import MissingRootError, ParseError
-from repodoc.models import Class, Function, Module
-from repodoc.signatures import signature
+from repotoc.errors import MissingRootError, ParseError
+from repotoc.models import Class, Function, Module
+from repotoc.signatures import signature
 
 if TYPE_CHECKING:
     from collections.abc import Iterable

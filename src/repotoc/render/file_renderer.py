@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from repodoc.models import Class, Function
-from repodoc.render import markdown, paths
+from repotoc.models import Class, Function
+from repotoc.render import markdown, paths
 
 if TYPE_CHECKING:
-    from repodoc.filters import Filters, RenderConfig
-    from repodoc.models import Module
+    from repotoc.filters import Filters, RenderConfig
+    from repotoc.models import Module
 
 Member = Function | Class
 

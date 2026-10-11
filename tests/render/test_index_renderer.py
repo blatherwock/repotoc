@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING
 
 from builders import module
 
-from repodoc.filters import RenderConfig
-from repodoc.render import index_renderer
+from repotoc.filters import RenderConfig
+from repotoc.render import index_renderer
 
 if TYPE_CHECKING:
-    from repodoc.models import Module
+    from repotoc.models import Module
 
 # Per-level depths used by the per-level depth test.
 _ROOT_DEPTH = 2
@@ -74,8 +74,8 @@ def test_directory_entries_link_to_the_child_index() -> None:
     assert text == (
         "# out\n"
         "\n"
-        "- dir: [`src/`](src/repodoc_index.md)\n"
-        "  - dir: [`pkg/`](src/pkg/repodoc_index.md)\n"
+        "- dir: [`src/`](src/repotoc_index.md)\n"
+        "  - dir: [`pkg/`](src/pkg/repotoc_index.md)\n"
         "    - file: [`mod.py`](src/pkg/mod.md) ([source](../src/pkg/mod.py))\n"
     )
 
@@ -90,9 +90,9 @@ def test_directory_entries_link_to_the_init_file() -> None:
 
     text = _render_index(".", docs, {"src/pkg", "src", "."}, inits)
 
-    assert "- dir: [`src/`](src/repodoc_index.md)\n" in text
+    assert "- dir: [`src/`](src/repotoc_index.md)\n" in text
     assert (
-        "  - dir: [`pkg/`](src/pkg/repodoc_index.md)"
+        "  - dir: [`pkg/`](src/pkg/repotoc_index.md)"
         " ([source](../src/pkg/__init__.py))\n" in text
     )
 
@@ -105,9 +105,9 @@ def test_directory_entries_end_with_the_init_first_line() -> None:
 
     text = _render_index(".", docs, directories, inits)
 
-    assert "- dir: [`src/`](src/repodoc_index.md)\n" in text
+    assert "- dir: [`src/`](src/repotoc_index.md)\n" in text
     assert (
-        "  - dir: [`pkg/`](src/pkg/repodoc_index.md)"
+        "  - dir: [`pkg/`](src/pkg/repotoc_index.md)"
         " ([source](../src/pkg/__init__.py)): Package doc.\n" in text
     )
 
@@ -151,7 +151,7 @@ def test_depth_limits_the_nested_listing() -> None:
 
     text = _render_index(".", docs, directories, None, config)
 
-    assert "- dir: [`pkg/`](src/pkg/repodoc_index.md)\n" in text
+    assert "- dir: [`pkg/`](src/pkg/repotoc_index.md)\n" in text
     assert "file:" not in text
 
 
@@ -162,7 +162,7 @@ def test_toc_max_depths_apply_per_level() -> None:
     config = RenderConfig(output="out", toc_max_depths=(1, 3))
 
     root = _render_index(".", docs, directories, None, config)
-    assert "- dir: [`src/`](src/repodoc_index.md)\n" in root
+    assert "- dir: [`src/`](src/repotoc_index.md)\n" in root
     assert "\n  " not in root
 
     src = _render_index("src", docs, directories, None, config)

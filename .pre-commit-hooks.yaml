@@ -1,12 +1,12 @@
-# The repodoc pre-commit hook. Regenerates the Markdown artifact from the
-# consuming project's [tool.repodoc] config; no filenames are passed and no
+# The repotoc pre-commit hook. Regenerates the Markdown artifact from the
+# consuming project's [tool.repotoc] config; no filenames are passed and no
 # arguments are needed. The package requires Python >= 3.11; consumers whose
 # pre-commit default interpreter is older pin language_version in their own
 # hook configuration.
-- id: repodoc
-  name: repodoc
-  description: Regenerate the repodoc Markdown artifact.
-  entry: repodoc
+- id: repotoc
+  name: repotoc
+  description: Regenerate the repotoc Markdown artifact.
+  entry: repotoc
   language: python
   pass_filenames: false
   files: (\.py$|^pyproject\.toml$)

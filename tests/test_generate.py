@@ -6,10 +6,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from repodoc.errors import GenerationError
-from repodoc.filters import RenderConfig
-from repodoc.generate import GenerationReport, generate
-from repodoc.models import Module
+from repotoc.errors import GenerationError
+from repotoc.filters import RenderConfig
+from repotoc.generate import GenerationReport, generate
+from repotoc.models import Module
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -30,18 +30,18 @@ def test_generation_writes_the_file_set_creating_the_output_directory(
     report = generate([_module("src/mod.py", "Does things.")], config)
 
     assert report.written == [
-        "repodoc_index.md",
+        "repotoc_index.md",
         "src/mod.md",
-        "src/repodoc_index.md",
+        "src/repotoc_index.md",
     ]
     assert report.deleted == []
     assert (tmp_path / "out" / "src" / "mod.md").read_text(encoding="utf-8") == (
         "# src/mod.py\n\n> Does things.\n"
     )
-    assert (tmp_path / "out" / "repodoc_index.md").read_text(encoding="utf-8") == (
+    assert (tmp_path / "out" / "repotoc_index.md").read_text(encoding="utf-8") == (
         "# out\n"
         "\n"
-        "- dir: [`src/`](src/repodoc_index.md)\n"
+        "- dir: [`src/`](src/repotoc_index.md)\n"
         "  - file: [`mod.py`](src/mod.md) ([source](../src/mod.py))"
         ": Does things.\n"
     )

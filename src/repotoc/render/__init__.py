@@ -4,12 +4,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from repodoc.filters import Filters
-from repodoc.render import file_renderer, index_renderer, paths
+from repotoc.filters import Filters
+from repotoc.render import file_renderer, index_renderer, paths
 
 if TYPE_CHECKING:
-    from repodoc.filters import RenderConfig
-    from repodoc.models import Module
+    from repotoc.filters import RenderConfig
+    from repotoc.models import Module
 
 
 def render(modules: list[Module], config: RenderConfig) -> dict[str, str]:

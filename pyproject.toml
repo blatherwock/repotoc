@@ -1,12 +1,12 @@
 [project]
-name = "repodoc"
+name = "repotoc"
 version = "0.1.0"
 requires-python = ">=3.11"
 dependencies = [
 ]
 
 [project.scripts]
-repodoc = "repodoc.cli:main"
+repotoc = "repotoc.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.12,<0.13"]
@@ -23,11 +23,11 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=src/repodoc"
+addopts = "--cov=src/repotoc"
 
 [tool.coverage.run]
 branch = true
-source = ["src/repodoc"]
+source = ["src/repotoc"]
 
 [tool.coverage.report]
 fail_under = 100
@@ -67,8 +67,8 @@ select = [
 convention = "pep257"
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
-"ast".msg = "import the ast module only inside src/repodoc/collect.py and src/repodoc/signatures.py"
+"ast".msg = "import the ast module only inside src/repotoc/collect.py and src/repotoc/signatures.py"
 
 [tool.ruff.lint.per-file-ignores]
-"src/repodoc/collect.py" = ["TID251"]
-"src/repodoc/signatures.py" = ["TID251"]
+"src/repotoc/collect.py" = ["TID251"]
+"src/repotoc/signatures.py" = ["TID251"]

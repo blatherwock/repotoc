@@ -4,7 +4,7 @@ from dataclasses import FrozenInstanceError
 
 import pytest
 
-from repodoc.models import Class, Function, Module
+from repotoc.models import Class, Function, Module
 
 
 def _function() -> Function:

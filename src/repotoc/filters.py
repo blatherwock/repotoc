@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, replace
 
-from repodoc.models import Class, Function
+from repotoc.models import Class, Function
 
 _CONSTRUCTORS = frozenset({"__init__", "__new__"})
 

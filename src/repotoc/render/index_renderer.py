@@ -6,11 +6,11 @@ from dataclasses import dataclass
 from pathlib import PurePosixPath
 from typing import TYPE_CHECKING
 
-from repodoc.render import markdown, paths
+from repotoc.render import markdown, paths
 
 if TYPE_CHECKING:
-    from repodoc.filters import RenderConfig
-    from repodoc.models import Module
+    from repotoc.filters import RenderConfig
+    from repotoc.models import Module
 
 
 @dataclass(frozen=True)

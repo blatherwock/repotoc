@@ -6,12 +6,12 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from repodoc.errors import GenerationError
-from repodoc.render import render
+from repotoc.errors import GenerationError
+from repotoc.render import render
 
 if TYPE_CHECKING:
-    from repodoc.filters import RenderConfig
-    from repodoc.models import Module
+    from repotoc.filters import RenderConfig
+    from repotoc.models import Module
 
 
 @dataclass(frozen=True)

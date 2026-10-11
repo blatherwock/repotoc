@@ -1,4 +1,4 @@
-"""Tests for config resolution: defaults, `[tool.repodoc]`, and overlays."""
+"""Tests for config resolution: defaults, `[tool.repotoc]`, and overlays."""
 
 from __future__ import annotations
 
@@ -6,9 +6,9 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from repodoc.config import Config, PartialConfig, load_config, merge
-from repodoc.errors import ConfigError
-from repodoc.filters import RenderConfig
+from repotoc.config import Config, PartialConfig, load_config, merge
+from repotoc.errors import ConfigError
+from repotoc.filters import RenderConfig
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -42,7 +42,7 @@ def test_load_config_defaults_when_no_pyproject_exists(
 def test_load_config_defaults_when_the_section_is_missing(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """A pyproject file without a `[tool.repodoc]` section yields defaults."""
+    """A pyproject file without a `[tool.repotoc]` section yields defaults."""
     monkeypatch.chdir(tmp_path)
     _write_pyproject(tmp_path, "[tool.ruff]\nline-length = 88\n")
 
@@ -65,12 +65,12 @@ def test_load_config_defaults_when_tool_is_not_a_table(
 def test_load_config_reads_every_key(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Every `[tool.repodoc]` key loads into the matching config field."""
+    """Every `[tool.repotoc]` key loads into the matching config field."""
     monkeypatch.chdir(tmp_path)
     _write_pyproject(
         tmp_path,
         """
-[tool.repodoc]
+[tool.repotoc]
 sources = ["src", "scripts"]
 output = "docs/api"
 file_member_depth = 2
@@ -99,7 +99,7 @@ def test_load_config_coerces_a_bare_toc_depth_to_a_one_element_tuple(
 ) -> None:
     """A bare integer `toc_max_depths` loads as a one-element tuple."""
     pyproject = _write_pyproject(
-        tmp_path, "[tool.repodoc]\ntoc_max_depths = 3\nsources = []\n"
+        tmp_path, "[tool.repotoc]\ntoc_max_depths = 3\nsources = []\n"
     )
 
     config = load_config(pyproject)
@@ -109,7 +109,7 @@ def test_load_config_coerces_a_bare_toc_depth_to_a_one_element_tuple(
 
 def test_load_config_fails_on_invalid_toml_naming_the_file(tmp_path: Path) -> None:
     """Invalid TOML fails naming the pyproject path."""
-    pyproject = _write_pyproject(tmp_path, "[tool.repodoc\n")
+    pyproject = _write_pyproject(tmp_path, "[tool.repotoc\n")
 
     with pytest.raises(ConfigError) as info:
         load_config(pyproject)
@@ -118,13 +118,13 @@ def test_load_config_fails_on_invalid_toml_naming_the_file(tmp_path: Path) -> No
 
 
 def test_load_config_fails_when_the_section_is_not_a_table(tmp_path: Path) -> None:
-    """A scalar `tool.repodoc` value fails naming the section."""
-    pyproject = _write_pyproject(tmp_path, "[tool]\nrepodoc = 5\n")
+    """A scalar `tool.repotoc` value fails naming the section."""
+    pyproject = _write_pyproject(tmp_path, "[tool]\nrepotoc = 5\n")
 
     with pytest.raises(ConfigError) as info:
         load_config(pyproject)
 
-    assert info.value.key == "[tool.repodoc]"
+    assert info.value.key == "[tool.repotoc]"
 
 
 @pytest.mark.parametrize(
@@ -153,7 +153,7 @@ def test_load_config_fails_naming_the_offending_key(
     tmp_path: Path, key: str, value: object
 ) -> None:
     """A wrong-typed, rejected, or unknown value fails naming its key."""
-    lines = ["[tool.repodoc]", f"{key} = {_toml(value)}"]
+    lines = ["[tool.repotoc]", f"{key} = {_toml(value)}"]
     pyproject = _write_pyproject(tmp_path, "\n".join(lines) + "\n")
 
     with pytest.raises(ConfigError) as info:
@@ -178,7 +178,7 @@ def test_load_config_error_message_describes_the_value(
     tmp_path: Path, key: str, value: object, fragment: str
 ) -> None:
     """The error message describes the offending value."""
-    pyproject = _write_pyproject(tmp_path, f"[tool.repodoc]\n{key} = {value!r}\n")
+    pyproject = _write_pyproject(tmp_path, f"[tool.repotoc]\n{key} = {value!r}\n")
 
     with pytest.raises(ConfigError) as info:
         load_config(pyproject)

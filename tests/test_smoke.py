@@ -1,8 +1,8 @@
 """Smoke test: the package is importable."""
 
-import repodoc
+import repotoc
 
 
 def test_package_imports() -> None:
-    """Importing repodoc succeeds."""
-    assert repodoc.__doc__
+    """Importing repotoc succeeds."""
+    assert repotoc.__doc__

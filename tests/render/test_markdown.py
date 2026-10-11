@@ -1,6 +1,6 @@
 """Tests for the Markdown emission helpers."""
 
-from repodoc.render.markdown import blockquote, code_block, heading, link, list_item
+from repotoc.render.markdown import blockquote, code_block, heading, link, list_item
 
 
 def test_heading_prefaces_the_text_with_the_level() -> None:

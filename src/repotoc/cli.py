@@ -1,4 +1,4 @@
-"""The `repodoc` command line interface: flags mapped onto the shared config."""
+"""The `repotoc` command line interface: flags mapped onto the shared config."""
 
 from __future__ import annotations
 
@@ -7,17 +7,17 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from repodoc.collect import collect
-from repodoc.config import PartialConfig, load_config, merge
-from repodoc.errors import CollectionError, ConfigError, GenerationError
-from repodoc.generate import generate
-from repodoc.render import render
+from repotoc.collect import collect
+from repotoc.config import PartialConfig, load_config, merge
+from repotoc.errors import CollectionError, ConfigError, GenerationError
+from repotoc.generate import generate
+from repotoc.render import render
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-    from repodoc.config import Config
-    from repodoc.models import Module
+    from repotoc.config import Config
+    from repotoc.models import Module
 
 
 def main(argv: Sequence[str] | None = None) -> None:
@@ -53,8 +53,8 @@ def _run(argv: Sequence[str] | None) -> int:
 def _build_parser() -> argparse.ArgumentParser:
     """Build the argument parser, one flag per config key."""
     parser = argparse.ArgumentParser(
-        prog="repodoc",
-        description="Regenerate the repodoc Markdown artifact.",
+        prog="repotoc",
+        description="Regenerate the repotoc Markdown artifact.",
     )
     parser.add_argument(
         "sources",
@@ -66,7 +66,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "-o",
         "--output",
         metavar="DIR",
-        help="output directory (default: docs/repodoc)",
+        help="output directory (default: docs/repotoc)",
     )
     parser.add_argument(
         "--check",

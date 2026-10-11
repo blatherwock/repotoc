@@ -2,8 +2,8 @@
 
 import pytest
 
-from repodoc.filters import Filters, RenderConfig
-from repodoc.models import Class, Function
+from repotoc.filters import Filters, RenderConfig
+from repotoc.models import Class, Function
 
 
 def _function(name: str, docstring: str | None = "Doc.") -> Function:

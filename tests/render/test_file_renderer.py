@@ -6,11 +6,11 @@ from typing import TYPE_CHECKING
 
 from builders import function, klass, module
 
-from repodoc.filters import Filters, RenderConfig
-from repodoc.render import file_renderer
+from repotoc.filters import Filters, RenderConfig
+from repotoc.render import file_renderer
 
 if TYPE_CHECKING:
-    from repodoc.models import Class, Function, Module
+    from repotoc.models import Class, Function, Module
 
 
 def _render_doc(doc: Module, config: RenderConfig | None = None) -> str:

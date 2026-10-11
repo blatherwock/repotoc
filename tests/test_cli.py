@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from repodoc.cli import main
+from repotoc.cli import main
 
 # The CLI exit codes: success, stale check, and error.
 _EXIT_SUCCESS = 0
@@ -23,9 +23,9 @@ def _write(root: Path, name: str, source: str = '"""Doc."""\n') -> Path:
 
 
 def _write_pyproject(tmp_path: Path, section: str) -> None:
-    """Write a pyproject file with a `[tool.repodoc]` section."""
+    """Write a pyproject file with a `[tool.repotoc]` section."""
     (tmp_path / "pyproject.toml").write_text(
-        f"[tool.repodoc]\n{section}", encoding="utf-8"
+        f"[tool.repotoc]\n{section}", encoding="utf-8"
     )
 
 
@@ -41,14 +41,14 @@ def _exit_code(argv: list[str]) -> int:
 def test_cli_generates_the_artifact_under_the_default_output(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Positional sources regenerate the artifact under docs/repodoc."""
+    """Positional sources regenerate the artifact under docs/repotoc."""
     monkeypatch.chdir(tmp_path)
     _write(tmp_path, "src/mod.py", '"""Does things."""\n')
 
     code = _exit_code(["src"])
 
     assert code == _EXIT_SUCCESS
-    assert (tmp_path / "docs" / "repodoc" / "src" / "mod.md").read_text(
+    assert (tmp_path / "docs" / "repotoc" / "src" / "mod.md").read_text(
         encoding="utf-8"
     ) == "# src/mod.py\n\n> Does things.\n"
 
@@ -94,8 +94,8 @@ def test_cli_sources_replace_config_sources(
     code = _exit_code(["src"])
 
     assert code == _EXIT_SUCCESS
-    assert (tmp_path / "docs" / "repodoc" / "src" / "b.md").is_file()
-    assert not (tmp_path / "docs" / "repodoc" / "cfg-src").exists()
+    assert (tmp_path / "docs" / "repotoc" / "src" / "b.md").is_file()
+    assert not (tmp_path / "docs" / "repotoc" / "cfg-src").exists()
 
 
 def test_cli_flags_reach_collection_and_rendering(
@@ -133,12 +133,12 @@ def public(a):
     )
 
     assert code == _EXIT_SUCCESS
-    text = (tmp_path / "docs" / "repodoc" / "src" / "mod.md").read_text(
+    text = (tmp_path / "docs" / "repotoc" / "src" / "mod.md").read_text(
         encoding="utf-8"
     )
     assert "_private" in text
     assert "def public(a)" not in text
-    assert not (tmp_path / "docs" / "repodoc" / "src" / "generated").exists()
+    assert not (tmp_path / "docs" / "repotoc" / "src" / "generated").exists()
 
 
 def test_cli_check_exits_zero_when_fresh(
@@ -162,9 +162,9 @@ def test_cli_check_exits_one_and_lists_missing_differing_and_extra_files(
     monkeypatch.chdir(tmp_path)
     _write(tmp_path, "src/mod.py")
     assert _exit_code(["src"]) == _EXIT_SUCCESS
-    output = tmp_path / "docs" / "repodoc"
+    output = tmp_path / "docs" / "repotoc"
     (output / "src" / "mod.md").write_text("changed", encoding="utf-8")
-    (output / "src" / "repodoc_index.md").unlink()
+    (output / "src" / "repotoc_index.md").unlink()
     (output / "extra.md").write_text("extra", encoding="utf-8")
 
     code = _exit_code(["src", "--check"])
@@ -173,7 +173,7 @@ def test_cli_check_exits_one_and_lists_missing_differing_and_extra_files(
     assert capsys.readouterr().out.splitlines() == [
         "extra: extra.md",
         "differing: src/mod.md",
-        "missing: src/repodoc_index.md",
+        "missing: src/repotoc_index.md",
     ]
 
 
@@ -188,9 +188,9 @@ def test_cli_check_with_no_output_directory_lists_every_file_missing(
 
     assert code == _EXIT_STALE
     assert capsys.readouterr().out.splitlines() == [
-        "missing: repodoc_index.md",
+        "missing: repotoc_index.md",
         "missing: src/mod.md",
-        "missing: src/repodoc_index.md",
+        "missing: src/repotoc_index.md",
     ]
 
 
@@ -203,7 +203,7 @@ def test_cli_without_sources_exits_two_with_a_usage_message(
     code = _exit_code([])
 
     assert code == _EXIT_ERROR
-    assert "usage: repodoc" in capsys.readouterr().err
+    assert "usage: repotoc" in capsys.readouterr().err
 
 
 def test_cli_invalid_config_exits_two_naming_the_offense(
@@ -213,7 +213,7 @@ def test_cli_invalid_config_exits_two_naming_the_offense(
 ) -> None:
     """A config that fails to load exits 2 with the error on stderr."""
     monkeypatch.chdir(tmp_path)
-    (tmp_path / "pyproject.toml").write_text("[tool.repodoc\n", encoding="utf-8")
+    (tmp_path / "pyproject.toml").write_text("[tool.repotoc\n", encoding="utf-8")
 
     code = _exit_code([])
 
@@ -286,12 +286,12 @@ def test_cli_generation_error_exits_two_with_the_exception_message(
     monkeypatch.chdir(tmp_path)
     _write(tmp_path, "src/mod.py")
     (tmp_path / "docs").mkdir()
-    (tmp_path / "docs" / "repodoc").write_text("occupied", encoding="utf-8")
+    (tmp_path / "docs" / "repotoc").write_text("occupied", encoding="utf-8")
 
     code = _exit_code(["src"])
 
     assert code == _EXIT_ERROR
-    assert "docs/repodoc" in capsys.readouterr().err
+    assert "docs/repotoc" in capsys.readouterr().err
 
 
 def test_cli_filesystem_error_during_check_exits_two(

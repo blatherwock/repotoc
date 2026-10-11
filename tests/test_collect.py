@@ -7,10 +7,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-import repodoc.signatures as signatures_module
-from repodoc.collect import collect
-from repodoc.errors import MissingRootError, ParseError
-from repodoc.models import Class, Function
+import repotoc.signatures as signatures_module
+from repotoc.collect import collect
+from repotoc.errors import MissingRootError, ParseError
+from repotoc.models import Class, Function
 
 if TYPE_CHECKING:
     from pathlib import Path
