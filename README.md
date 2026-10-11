@@ -1,8 +1,8 @@
-# repotoc
+# RepoTOC
 
-repotoc generates a Markdown table of contents for a Python repository. It collects the signature and docstring of every module, class, and function, then renders them as a folder of Markdown files that mirrors the source tree. A person or an AI agent can read this artifact to survey a codebase without opening its source files.
+RepoTOC generates a Markdown table of contents for a Python repository. It collects the signature and docstring of every module, class, and function, then renders them as a folder of Markdown files that mirrors the source tree. A person or an AI agent can read this artifact to survey a codebase without opening its source files.
 
-repotoc parses source with the standard library `ast` module and never imports or executes it, so it is safe to run on any repository. Output is deterministic: the same source and settings always produce byte-identical files.
+RepoTOC parses source with the standard library `ast` module and never imports or executes it, so it is safe to run on any repository. Output is deterministic: the same source and settings always produce byte-identical files.
 
 ## Output
 
@@ -14,7 +14,7 @@ The tool owns the output directory (`docs/repotoc` by default). Regeneration wri
 
 ## Installation
 
-repotoc requires Python 3.11 or later. Add it to a project as a development dependency:
+RepoTOC requires Python 3.11 or later. Add it to a project as a development dependency:
 
 ```
 uv add --dev git+https://github.com/blatherwock/repotoc
@@ -28,7 +28,7 @@ Run `repotoc` from the repository root:
 uv run repotoc
 ```
 
-With no arguments, repotoc reads every setting from `pyproject.toml` (see [Configuration](#configuration)). The pre-commit hook runs this form.
+With no arguments, RepoTOC reads every setting from `pyproject.toml` (see [Configuration](#configuration)). The pre-commit hook runs this form.
 
 To verify the artifact without writing, pass `--check`. It prints each stale file as `missing:`, `differing:`, or `extra:` and exits 1 when it finds any. Like `ruff format --check`, it suits a CI gate.
 
@@ -60,7 +60,7 @@ Each key has a matching CLI flag. Flags override the config file, and the config
 | `file_include_signatures` | `--[no-]file-include-signatures` | on | Render member signatures (decorators and definition line) |
 | `toc_max_depths` | `--toc-max-depths` | `6` | Per-level list depths for indexes |
 
-repotoc always skips hidden directories and `__pycache__`, `venv`, `build`, `dist`, and `node_modules`; `exclude` adds names to this list.
+RepoTOC always skips hidden directories and `__pycache__`, `venv`, `build`, `dist`, and `node_modules`; `exclude` adds names to this list.
 
 `toc_max_depths` takes an integer or a list of integers (space-separated on the command line). The first value sets the depth of the root index, each later value sets the depth one directory level down, and the last value applies to every deeper level.
 

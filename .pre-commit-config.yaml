@@ -1,5 +1,5 @@
 # Commit gates: the repository's own recipes, exactly as run by hand. The
-# gates always exercise the working tree, so changed repotoc behavior applies
+# gates always exercise the working tree, so changed RepoTOC behavior applies
 # before it is committed. `just fix` writes (format, safe lint fixes, doc
 # regeneration); when it changes files pre-commit fails the commit and leaves
 # the fixes unstaged. `just check` then verifies what fix cannot fix (type

@@ -1,4 +1,4 @@
-# Contributing to repotoc
+# Contributing to RepoTOC
 
 ## Setup
 
