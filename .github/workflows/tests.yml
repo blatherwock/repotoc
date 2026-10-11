@@ -1,5 +1,7 @@
-# Test suite: dev Python (coverage gate) and floor Python (pass-only; the
-# version-guarded branch cannot be covered there). Mirrors `just test`.
+# Test suite and static checks, mirroring `just test` and `just check`:
+# the dev Python (coverage gate) and the floor Python (pass-only; the
+# version-guarded branch cannot be covered there), plus formatting, lint,
+# types, and doc freshness on the dev Python.
 
 name: tests
 
@@ -27,3 +29,16 @@ jobs:
       - name: Test (pass-only)
         if: matrix.python == '3.11'
         run: uv run pytest --no-cov -q
+
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.14"
+      - run: uv sync --frozen
+      - run: uv run ruff format --check
+      - run: uv run ruff check
+      - run: uv run ty check
+      - run: uv run repotoc --check
