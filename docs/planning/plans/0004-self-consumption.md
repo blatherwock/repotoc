@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implements `docs/planning/specs/0004-self-consumption.md`: wire this repository to consume its own shipped pre-commit hook. Four additions, no package code changes: a `[tool.repotoc]` section in `pyproject.toml`, a `.pre-commit-config.yaml` referencing the repository by local path, the generated initial artifact under `docs/repotoc`, and `justfile` updates (freshness gate in `check`, a `hooks` recipe for host setup).
+Implements `docs/planning/specs/0004-self-consumption.md`: wire the repository to consume its own shipped pre-commit hook. No package code changes: a `[tool.repotoc]` section in `pyproject.toml`, a `.pre-commit-config.yaml` that consumes the shipped hook definition and runs the repo's other checks as repo-local hooks, the generated initial artifact under `docs/repotoc`, and `justfile` updates (freshness gate in `check`, doc regeneration in `fix`, and a `hooks` recipe for host setup).
 
 ## Task list
 
@@ -15,7 +15,7 @@ Implements `docs/planning/specs/0004-self-consumption.md`: wire this repository 
   - Run `uv run repotoc` and inspect `docs/repotoc`; it must cover `src` and `tests` and be byte-stable on a rerun. The artifact files are left for the user to commit with the change (per the repo rule, we never commit); tracking is what makes hook enforcement work.
   - Satisfies spec scenarios: the tracked-artifact decision (initial commit).
 - [x] Task 3: Add `.pre-commit-config.yaml`
-  - One entry: `repo: ./`, `rev: HEAD`, hook `id: repotoc`, no overrides; the shipped `.pre-commit-hooks.yaml` supplies entry, language, file filter, and `pass_filenames`. Include a one-line comment that the mutable-reference warning is expected and benign. Amended during host setup: pinned `default_language_version: python: python3.14` because pre-commit resolves the default interpreter by PATH lookup (it landed on the host's 3.9, below the package floor) and never reads `.python-version`; host setup runs `uv python install 3.14` to link the interpreter. Verified: the hook env builds as `py_env-python3.14` on 3.14.8.
+  - A `repo: ./` entry with `rev: HEAD` and hook `id: repotoc`, no overrides: pre-commit installs this repository from its own path and consumes the shipped `.pre-commit-hooks.yaml` verbatim (entry, language, file filter, `pass_filenames`). Pin `default_language_version: python: python3.14`, since pre-commit resolves the default interpreter by PATH lookup and never reads `.python-version`; hosts link the pinned interpreter with `uv python install 3.14`. Before the doc hook, repo-local `language: system` hooks run `uv run ruff format`, `uv run ruff check --fix`, and `uv run ty check`, with the tool versions from `uv.lock`; the ruff hooks fix staged violations and pre-commit leaves the fixes unstaged behind a "files were modified by this hook" failure. A comment records that the mutable-reference warning is expected. Verified in the container: the hook env builds as `py_env-python3.14`, planted violations are fixed and left unstaged, and unsafe fixes (F401 in `__init__.py`) block without rewriting.
   - Satisfies spec scenarios: hook normal operation, failure handling, edge cases.
 
 ### Checkpoint: config and artifact
@@ -25,8 +25,8 @@ Implements `docs/planning/specs/0004-self-consumption.md`: wire this repository 
 
 ### Phase 2: Tooling
 
-- [x] Task 4: Add the freshness gate to `just check`
-  - Append `uv run repotoc --check` to the `check` recipe so the definition-of-done gate matches the host hook's outcome. Amended during review: `just fix` gained the write counterpart, `uv run repotoc`, which clears every staleness class the gate reports (verified for differing and extra files).
+- [x] Task 4: Add freshness handling to `just check` and `just fix`
+  - `just check` ends with `uv run repotoc --check`, so the definition-of-done gate matches the host hook's outcome; `just fix` ends with `uv run repotoc`, the gate's write counterpart, clearing every staleness class the gate reports (differing, extra, missing).
   - Satisfies spec scenarios: freshness gate (all three).
 - [x] Task 5: Add the `hooks` recipe
   - A host-only recipe (guard with `host_only_error`; the container mounts `.git` read-only) running `uvx pre-commit install`.
@@ -37,7 +37,7 @@ Implements `docs/planning/specs/0004-self-consumption.md`: wire this repository 
 - [x] `just check` passes end to end, including the freshness gate.
 - [x] `just test` passes (no package code touched; confirms the gate did not break the container recipes).
 - [x] Staleness probe: a temporary docstring edit makes the gate exit 1 naming the differing file; restoring it returns exit 0.
-- [ ] Host verification, run by the user: `uv python install 3.14`, `uv tool install pre-commit` (or run via uvx), `just hooks`, then stage a docstring edit and confirm the hook fails with "files were modified by this hook"; re-stage and confirm the commit passes.
+- [x] Host verification: the initial artifact commit on the host exercised the doc hook and regeneration worked. The repo-local ruff/ty hooks were added after that commit, so their first host run is the next commit.
 
 ## Risks and mitigations
 

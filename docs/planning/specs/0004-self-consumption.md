@@ -18,11 +18,14 @@ The generated `docs/repotoc` artifact is tracked in git. Enforcement depends on 
 
 pre-commit itself is installed outside the repository, globally on the host; a `just` recipe runs `pre-commit install` for host setup, and host setup also installs the pinned interpreter with `uv python install 3.14`.
 
+The other `just check` tools run as repo-local `language: system` hooks through `uv run`, before the doc hook, with the same file filter and `pass_filenames: false`: the ruff hooks run in fix mode (`ruff format`, `ruff check --fix`) and `ty check` stays read-only, matching the tools' capabilities. When a fix-mode hook rewrites files, pre-commit fails the commit with "files were modified by this hook" and leaves the fixes unstaged; re-staging passes. Only safe lint fixes are applied; unsafe ones (for example unused imports in `__init__.py`) are reported and block. Hook and gate versions come from `uv.lock`; the `just check` gate stays read-only and `just fix` applies the same fixes on demand. Tests stay out of pre-commit; `just test` is their gate.
+
 ## Decisions
 
 - **Self-consume via `repo: ./` with `rev: HEAD`.** pre-commit installs this repository from its own path and reads the hook definition we ship to consumers, so the self-hosted wiring and the consumer wiring cannot diverge. The environment is pre-commit-managed; committing needs no uv and no activated venv on the host. Verified end to end in a scratch repository: generation, the tracked-file failure, and live source pickup [confirmed]. Rejected: a `repo: local` hook with `entry: uv run repotoc` and `language: system` (requires uv wherever pre-commit runs, the requirement 0003 rejected for consumers, a fortiori for this repository) and a `repo: local` hook with `language: python` plus `additional_dependencies` (cannot reference the local project cleanly).
 - **`rev: HEAD` despite the mutable-reference warning.** pre-commit warns that mutable references are never updated after first install [confirmed]. Irrelevant here: with a local-path repository the hook environment picks up working-tree changes without a rebuild, verified by editing source and rerunning [confirmed]. The warning is cosmetic; a comment in the config says so.
 - **Pin `default_language_version` to `python3.14`.** pre-commit resolves the default interpreter by PATH lookup (`python3.<its own minor>`, then `python3`) and never reads `.python-version`; on the host it landed on python 3.9 [confirmed], below the package floor of 3.11. The pin names the interpreter that `uv python install 3.14` links into `~/.local/bin`, so the hook env matches the python uv manages for the project. Verified: the hook env builds as `py_env-python3.14` on 3.14.8 [confirmed]. Rejected: relying on default resolution alone (implicit, breaks silently when pre-commit's own interpreter or PATH changes) and pinning an absolute interpreter path (host-specific, not committable).
+- **Repo-local `uv run` hooks for ruff and ty, ruff in fix mode.** The hooks run the same tool versions `uv.lock` pins, so commit-time checks and `just check` cannot disagree; this is repo-local wiring, not the consumer hook 0003 keeps uv-free. The ruff hooks fix rather than report: pre-commit's modified-file detection blocks the commit and surfaces the fixes as unstaged changes, mirroring `just fix` against the read-only gate. Rejected: the official ruff pre-commit mirror (`pre-commit autoupdate` maintains its rev independently of `uv.lock`, so hook and gate versions drift), a pytest hook (commit-time latency for a gate `just test` already owns), and `--unsafe-fixes` (unwanted rewrites beyond safe fixes).
 - **The artifact is tracked.** Untracked artifact files never trigger the "files were modified" failure [confirmed], so until the first artifact commit the hook enforces nothing; this change commits the initial artifact itself. Rejected: gitignoring the artifact (enforcement and staleness detection both disappear).
 - **Scope is `src` and `tests`.** Self-documentation covers the whole repository, so both source roots feed the artifact.
 - **pre-commit lives outside the repository.** The host installs it globally (uv tool) and runs `pre-commit install`; the repository ships only `.pre-commit-config.yaml`. Rejected: a dev dependency group entry (duplicates the host global install, and the container runs never use it).
@@ -35,6 +38,9 @@ The wiring is repository configuration, not package code. Scenarios are verified
 ### Hook: normal operation
 
 - When a commit stages tracked `*.py` or `pyproject.toml` changes, the hook regenerates `docs/repotoc` from config alone.
+- When a commit stages tracked `*.py` or `pyproject.toml` changes, the local hooks run `ruff format`, `ruff check --fix`, and `ty check` with the `uv.lock` tool versions.
+- When formatting or safe-fixable lint violations are staged, the ruff hooks rewrite the files, fail the commit with "files were modified by this hook", and leave the fixes unstaged; re-staging passes.
+- When a violation has no safe fix (for example an unused import in `__init__.py`), the hook reports it and blocks without rewriting.
 - When regeneration changes a tracked artifact file, the hook fails with "files were modified by this hook"; after re-staging the artifact, the same commit passes.
 - When the staged changes leave the artifact unchanged, the hook passes.
 
@@ -59,7 +65,6 @@ The wiring is repository configuration, not package code. Scenarios are verified
 ## Out of scope
 
 - CI wiring for the hook or the gate; no current document owns CI.
-- Pre-commit running other tools (ruff, ty); `just check` remains the definition-of-done gate for those.
 - Consumer-facing documentation beyond what 0003 and `.pre-commit-hooks.yaml` already state.
 
 ## Related documents
