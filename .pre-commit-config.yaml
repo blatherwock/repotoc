@@ -1,44 +1,21 @@
-# Self-consumption: pre-commit installs this repository from its own path and
-# consumes the hook definition shipped in .pre-commit-hooks.yaml. The
-# mutable-reference warning rev: HEAD triggers is expected and benign; the
-# hook environment picks up working-tree changes without a rebuild.
-#
-# The repo-local hooks run through `uv run` so their tool versions come from
-# uv.lock: the commit-time checks and `just check` can never disagree. They
-# need uv on the host, which the uvx-installed pre-commit already requires.
-# The ruff hooks run in fix mode: they rewrite files and pre-commit fails the
-# commit with "files were modified by this hook", leaving the fixes unstaged;
-# re-stage and retry. The gate in `just check` stays read-only. Tests stay
-# out; `just test` is their gate.
-#
-# pre-commit never reads .python-version; it resolves python by PATH lookup,
-# which would land on the host's old default. The pin names the interpreter
-# that `uv python install 3.14` links into ~/.local/bin, so every host runs
-# the hook on the same python uv manages for the project.
-default_language_version:
-  python: python3.14
+# Commit gates: the repository's own recipes, exactly as run by hand. The
+# gates always exercise the working tree, so changed repotoc behavior applies
+# before it is committed. `just fix` writes (format, safe lint fixes, doc
+# regeneration); when it changes files pre-commit fails the commit and leaves
+# the fixes unstaged. `just check` then verifies what fix cannot fix (type
+# errors, unfixable lint, stale docs). Tools and interpreter come from the
+# recipes' environment, not from pre-commit. The shipped .pre-commit-hooks.yaml
+# is for consumers; this repository gates commits with its recipes instead.
 repos:
   - repo: local
     hooks:
-      - id: ruff-format
-        name: ruff format
-        entry: uv run ruff format
+      - id: just-fix
+        name: just fix
+        entry: just fix
         language: system
         pass_filenames: false
-        files: (\.py$|^pyproject\.toml$)
-      - id: ruff-check
-        name: ruff check --fix
-        entry: uv run ruff check --fix
+      - id: just-check
+        name: just check
+        entry: just check
         language: system
         pass_filenames: false
-        files: (\.py$|^pyproject\.toml$)
-      - id: ty-check
-        name: ty check
-        entry: uv run ty check
-        language: system
-        pass_filenames: false
-        files: (\.py$|^pyproject\.toml$)
-  - repo: ./
-    rev: HEAD
-    hooks:
-      - id: repotoc

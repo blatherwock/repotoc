@@ -7,8 +7,10 @@ image := "repotoc:latest"
 # True when running inside the project container (set by the Dockerfile).
 in_container := `[ "${IN_CONTAINER:-}" = "1" ] && echo 1 || echo 0`
 
-# Base docker run: mount repo, remount .git read-only, work from it, clean up on exit.
-docker_run := "docker run --rm -it -v \"$PWD\":/workspace -v \"$PWD/.git\":/workspace/.git:ro -w /workspace"
+# Base docker run: mount repo, remount .git read-only, work from it, clean up on
+# exit. Non-interactive so commit hooks and other no-tty callers can use it;
+# recipes needing a terminal add -it themselves.
+docker_run := "docker run --rm -v \"$PWD\":/workspace -v \"$PWD/.git\":/workspace/.git:ro -w /workspace"
 
 # Command fragments selected by execution context.
 container_prefix := if in_container == "1" { "" } else { docker_run + " " + image + " " }
@@ -35,12 +37,12 @@ _require-image:
 # Start the container and run pi (host only).
 pi *args: _require-image
     @{{host_only_error}}
-    @op run --env-file="$HOME/ai.env" -- {{docker_run}} -v "$HOME/.pi/agent:/root/.pi/agent" -e OPENROUTER_API_KEY -e DEEPSEEK_API_KEY -e PI_TELEMETRY {{image}} pi {{args}}
+    @op run --env-file="$HOME/ai.env" -- {{docker_run}} -it -v "$HOME/.pi/agent:/root/.pi/agent" -e OPENROUTER_API_KEY -e DEEPSEEK_API_KEY -e PI_TELEMETRY {{image}} pi {{args}}
 
 # Drop into a bash prompt in the container (host only).
 shell: _require-image
     @{{host_only_error}}
-    @{{docker_run}} -v "$HOME/.pi/agent:/root/.pi/agent" {{image}} bash || [ $? -eq 130 ]
+    @{{docker_run}} -it -v "$HOME/.pi/agent:/root/.pi/agent" {{image}} bash || [ $? -eq 130 ]
 
 # Run the test suite with pytest on the dev Python (coverage gate) and on the
 # floor Python (pass-only; the version-guarded branch cannot be covered there).
