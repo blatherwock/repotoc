@@ -9,7 +9,7 @@
 - file: [`filters.py`](filters.md) ([source](../../../../src/repotoc/filters.py)): Presentation settings and the visibility filter they drive.
 - file: [`generate.py`](generate.md) ([source](../../../../src/repotoc/generate.py)): Generation layer: write and prune the tool-owned artifact output directory.
 - file: [`models.py`](models.md) ([source](../../../../src/repotoc/models.py)): Model dataclasses for collected modules, classes, and functions.
-- dir: [`render/`](render/repotoc_index.md) ([source](../../../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
+- dir: [`render/`](render/repotoc_toc.md) ([source](../../../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
   - file: [`__init__.py`](render/__init__.md) ([source](../../../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
   - file: [`file_renderer.py`](render/file_renderer.md) ([source](../../../../src/repotoc/render/file_renderer.py)): Doc file rendering: module models into Markdown doc files.
   - file: [`index_renderer.py`](render/index_renderer.md) ([source](../../../../src/repotoc/render/index_renderer.py)): Index rendering: directory contents into Markdown index files.

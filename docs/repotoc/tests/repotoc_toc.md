@@ -1,6 +1,6 @@
 # tests
 
-- dir: [`render/`](render/repotoc_index.md)
+- dir: [`render/`](render/repotoc_toc.md)
   - file: [`builders.py`](render/builders.md) ([source](../../../tests/render/builders.py)): Model builders shared by the rendering tests.
   - file: [`test_file_renderer.py`](render/test_file_renderer.md) ([source](../../../tests/render/test_file_renderer.py)): Tests for doc file rendering.
   - file: [`test_index_renderer.py`](render/test_index_renderer.md) ([source](../../../tests/render/test_index_renderer.py)): Tests for index rendering.

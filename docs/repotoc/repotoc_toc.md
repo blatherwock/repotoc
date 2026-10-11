@@ -1,7 +1,7 @@
 # docs/repotoc
 
-- dir: [`src/`](src/repotoc_index.md)
-  - dir: [`repotoc/`](src/repotoc/repotoc_index.md) ([source](../../src/repotoc/__init__.py)): Static docstring and signature collection for Python repositories.
+- dir: [`src/`](src/repotoc_toc.md)
+  - dir: [`repotoc/`](src/repotoc/repotoc_toc.md) ([source](../../src/repotoc/__init__.py)): Static docstring and signature collection for Python repositories.
     - file: [`cli.py`](src/repotoc/cli.md) ([source](../../src/repotoc/cli.py)): The `repotoc` command line interface: flags mapped onto the shared config.
     - file: [`collect.py`](src/repotoc/collect.md) ([source](../../src/repotoc/collect.py)): Collection layer: turn source roots into module models via static AST parsing.
     - file: [`config.py`](src/repotoc/config.md) ([source](../../src/repotoc/config.py)): Config resolution: defaults, the `[tool.repotoc]` section, and CLI overlays.
@@ -9,15 +9,15 @@
     - file: [`filters.py`](src/repotoc/filters.md) ([source](../../src/repotoc/filters.py)): Presentation settings and the visibility filter they drive.
     - file: [`generate.py`](src/repotoc/generate.md) ([source](../../src/repotoc/generate.py)): Generation layer: write and prune the tool-owned artifact output directory.
     - file: [`models.py`](src/repotoc/models.md) ([source](../../src/repotoc/models.py)): Model dataclasses for collected modules, classes, and functions.
-    - dir: [`render/`](src/repotoc/render/repotoc_index.md) ([source](../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
+    - dir: [`render/`](src/repotoc/render/repotoc_toc.md) ([source](../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
       - file: [`__init__.py`](src/repotoc/render/__init__.md) ([source](../../src/repotoc/render/__init__.py)): Rendering layer: turn module models into Markdown doc files and indexes.
       - file: [`file_renderer.py`](src/repotoc/render/file_renderer.md) ([source](../../src/repotoc/render/file_renderer.py)): Doc file rendering: module models into Markdown doc files.
       - file: [`index_renderer.py`](src/repotoc/render/index_renderer.md) ([source](../../src/repotoc/render/index_renderer.py)): Index rendering: directory contents into Markdown index files.
       - file: [`markdown.py`](src/repotoc/render/markdown.md) ([source](../../src/repotoc/render/markdown.py)): Markdown emission helpers: headings, fences, blockquotes, link and list lines.
       - file: [`paths.py`](src/repotoc/render/paths.md) ([source](../../src/repotoc/render/paths.py)): Doc paths, source links, and directory chains for the artifact layout.
     - file: [`signatures.py`](src/repotoc/signatures.md) ([source](../../src/repotoc/signatures.py)): Normalized source form of function and class definition lines.
-- dir: [`tests/`](tests/repotoc_index.md)
-  - dir: [`render/`](tests/render/repotoc_index.md)
+- dir: [`tests/`](tests/repotoc_toc.md)
+  - dir: [`render/`](tests/render/repotoc_toc.md)
     - file: [`builders.py`](tests/render/builders.md) ([source](../../tests/render/builders.py)): Model builders shared by the rendering tests.
     - file: [`test_file_renderer.py`](tests/render/test_file_renderer.md) ([source](../../tests/render/test_file_renderer.py)): Tests for doc file rendering.
     - file: [`test_index_renderer.py`](tests/render/test_index_renderer.md) ([source](../../tests/render/test_index_renderer.py)): Tests for index rendering.

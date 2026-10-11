@@ -30,18 +30,18 @@ def test_generation_writes_the_file_set_creating_the_output_directory(
     report = generate([_module("src/mod.py", "Does things.")], config)
 
     assert report.written == [
-        "repotoc_index.md",
+        "repotoc_toc.md",
         "src/mod.md",
-        "src/repotoc_index.md",
+        "src/repotoc_toc.md",
     ]
     assert report.deleted == []
     assert (tmp_path / "out" / "src" / "mod.md").read_text(encoding="utf-8") == (
         "# src/mod.py\n\n> Does things.\n"
     )
-    assert (tmp_path / "out" / "repotoc_index.md").read_text(encoding="utf-8") == (
+    assert (tmp_path / "out" / "repotoc_toc.md").read_text(encoding="utf-8") == (
         "# out\n"
         "\n"
-        "- dir: [`src/`](src/repotoc_index.md)\n"
+        "- dir: [`src/`](src/repotoc_toc.md)\n"
         "  - file: [`mod.py`](src/mod.md) ([source](../src/mod.py))"
         ": Does things.\n"
     )

@@ -26,8 +26,8 @@ def test_doc_path_mirrors_the_source_path() -> None:
 
 def test_index_path_sits_inside_the_directory() -> None:
     """The index path places the tool-owned index inside the directory."""
-    assert index_path(".") == "repotoc_index.md"
-    assert index_path("src/pkg") == "src/pkg/repotoc_index.md"
+    assert index_path(".") == "repotoc_toc.md"
+    assert index_path("src/pkg") == "src/pkg/repotoc_toc.md"
 
 
 def test_parent_returns_the_enclosing_directory() -> None:

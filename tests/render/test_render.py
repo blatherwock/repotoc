@@ -15,11 +15,10 @@ def test_plain_module_renders_doc_file_and_root_index() -> None:
     """A plain module yields its doc file plus the root index."""
     files = render([module("mod.py")], RenderConfig(output="out"))
 
-    assert set(files) == {"mod.md", "repotoc_index.md"}
+    assert set(files) == {"mod.md", "repotoc_toc.md"}
     assert files["mod.md"].startswith("# mod.py\n")
     assert (
-        "- file: [`mod.py`](mod.md) ([source](../mod.py))\n"
-        in files["repotoc_index.md"]
+        "- file: [`mod.py`](mod.md) ([source](../mod.py))\n" in files["repotoc_toc.md"]
     )
 
 
@@ -29,10 +28,10 @@ def test_indexes_exist_at_every_ancestor_directory() -> None:
 
     assert set(files) == {
         "src/a/b/mod.md",
-        "src/a/b/repotoc_index.md",
-        "src/a/repotoc_index.md",
-        "src/repotoc_index.md",
-        "repotoc_index.md",
+        "src/a/b/repotoc_toc.md",
+        "src/a/repotoc_toc.md",
+        "src/repotoc_toc.md",
+        "repotoc_toc.md",
     }
 
 
@@ -42,11 +41,11 @@ def test_docstring_only_init_renders_index_instead_of_doc_file() -> None:
 
     files = render(modules, RenderConfig(output="out"))
 
-    assert set(files) == {"pkg/repotoc_index.md", "repotoc_index.md"}
-    assert files["pkg/repotoc_index.md"] == "# pkg\n\n> Package doc.\n"
+    assert set(files) == {"pkg/repotoc_toc.md", "repotoc_toc.md"}
+    assert files["pkg/repotoc_toc.md"] == "# pkg\n\n> Package doc.\n"
     assert (
-        "- dir: [`pkg/`](pkg/repotoc_index.md)"
-        " ([source](../pkg/__init__.py)): Package doc.\n" in files["repotoc_index.md"]
+        "- dir: [`pkg/`](pkg/repotoc_toc.md)"
+        " ([source](../pkg/__init__.py)): Package doc.\n" in files["repotoc_toc.md"]
     )
 
 
@@ -56,8 +55,8 @@ def test_memberless_init_without_docstring_leaves_no_trace() -> None:
 
     files = render(modules, RenderConfig(output="out"))
 
-    assert set(files) == {"mod.md", "repotoc_index.md"}
-    assert "pkg" not in files["repotoc_index.md"]
+    assert set(files) == {"mod.md", "repotoc_toc.md"}
+    assert "pkg" not in files["repotoc_toc.md"]
 
 
 def test_root_init_docstring_renders_under_the_root_index_title() -> None:
@@ -65,8 +64,8 @@ def test_root_init_docstring_renders_under_the_root_index_title() -> None:
     modules = [module("__init__.py", docstring="Root doc.")]
     files = render(modules, RenderConfig(output="out"))
 
-    assert set(files) == {"repotoc_index.md"}
-    assert files["repotoc_index.md"] == "# out\n\n> Root doc.\n"
+    assert set(files) == {"repotoc_toc.md"}
+    assert files["repotoc_toc.md"] == "# out\n\n> Root doc.\n"
 
 
 def test_init_with_visible_members_renders_a_doc_file_like_any_module() -> None:
@@ -81,7 +80,7 @@ def test_init_with_visible_members_renders_a_doc_file_like_any_module() -> None:
     assert "## run\n" in files["pkg/__init__.md"]
     assert (
         "- file: [`__init__.py`](__init__.md) ([source](../../pkg/__init__.py))"
-        ": Package doc.\n" in files["pkg/repotoc_index.md"]
+        ": Package doc.\n" in files["pkg/repotoc_toc.md"]
     )
 
 
@@ -91,7 +90,7 @@ def test_index_lists_multiple_modules_sorted_by_name() -> None:
 
     files = render(modules, RenderConfig(output="out"))
 
-    text = files["src/repotoc_index.md"]
+    text = files["src/repotoc_toc.md"]
     assert "- file: [`mod.py`](mod.md) ([source](../../src/mod.py))\n" in text
     assert "- file: [`util.py`](util.md) ([source](../../src/util.py))\n" in text
     assert text.index("mod.py") < text.index("util.py")

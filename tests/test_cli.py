@@ -164,7 +164,7 @@ def test_cli_check_exits_one_and_lists_missing_differing_and_extra_files(
     assert _exit_code(["src"]) == _EXIT_SUCCESS
     output = tmp_path / "docs" / "repotoc"
     (output / "src" / "mod.md").write_text("changed", encoding="utf-8")
-    (output / "src" / "repotoc_index.md").unlink()
+    (output / "src" / "repotoc_toc.md").unlink()
     (output / "extra.md").write_text("extra", encoding="utf-8")
 
     code = _exit_code(["src", "--check"])
@@ -173,7 +173,7 @@ def test_cli_check_exits_one_and_lists_missing_differing_and_extra_files(
     assert capsys.readouterr().out.splitlines() == [
         "extra: extra.md",
         "differing: src/mod.md",
-        "missing: src/repotoc_index.md",
+        "missing: src/repotoc_toc.md",
     ]
 
 
@@ -188,9 +188,9 @@ def test_cli_check_with_no_output_directory_lists_every_file_missing(
 
     assert code == _EXIT_STALE
     assert capsys.readouterr().out.splitlines() == [
-        "missing: repotoc_index.md",
+        "missing: repotoc_toc.md",
         "missing: src/mod.md",
-        "missing: src/repotoc_index.md",
+        "missing: src/repotoc_toc.md",
     ]
 
 
