@@ -1,0 +1,16 @@
+# Self-consumption: pre-commit installs this repository from its own path and
+# consumes the hook definition shipped in .pre-commit-hooks.yaml. The
+# mutable-reference warning rev: HEAD triggers is expected and benign; the
+# hook environment picks up working-tree changes without a rebuild.
+#
+# pre-commit never reads .python-version; it resolves python by PATH lookup,
+# which would land on the host's old default. The pin names the interpreter
+# that `uv python install 3.14` links into ~/.local/bin, so every host runs
+# the hook on the same python uv manages for the project.
+default_language_version:
+  python: python3.14
+repos:
+  - repo: ./
+    rev: HEAD
+    hooks:
+      - id: repotoc

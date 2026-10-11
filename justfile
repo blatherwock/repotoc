@@ -50,18 +50,25 @@ test *args: _require-image
     @echo "== floor python ({{floor_python}}): pass-only =="
     @{{container_prefix}}env UV_PROJECT_ENVIRONMENT=.venv-{{floor_python}} uv run --python {{floor_python}} pytest --no-cov -q {{args}}
 
-# Apply fixes: format code and fix safe lint violations.
+# Apply fixes: format code, fix safe lint violations, and regenerate the docs artifact.
 fix *args: _require-image
     @{{container_prefix}}uv run ruff format {{args}}
     @{{container_prefix}}uv run ruff check --fix {{args}}
+    @{{container_prefix}}uv run repotoc
 
-# Verify: check formatting, lint, and types. Read-only; the definition of done gate.
+# Verify: check formatting, lint, types, and doc freshness. Read-only; the definition of done gate.
 check *args: _require-image
     @{{container_prefix}}uv run ruff format --check {{args}}
     @{{container_prefix}}uv run ruff check {{args}}
     @{{container_prefix}}uv run ty check {{args}}
+    @{{container_prefix}}uv run repotoc --check
 
 # Remove the container image (host only).
 clean:
     @{{host_only_error}}
     -docker image rm {{image}}
+
+# Install the git hooks via pre-commit (host only).
+hooks:
+    @{{host_only_error}}
+    uvx pre-commit install
