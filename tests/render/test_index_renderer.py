@@ -50,7 +50,7 @@ def test_file_entries_link_doc_and_source() -> None:
 
     text = _render_index(".", docs)
 
-    assert text == "# out\n\n- file: [`mod.py`](mod.md) ([source](../mod.py))\n"
+    assert text == "# out\n\n- [`mod.py`](mod.md) ([source](../mod.py))\n"
 
 
 def test_file_entries_end_with_the_first_docstring_line() -> None:
@@ -60,7 +60,7 @@ def test_file_entries_end_with_the_first_docstring_line() -> None:
     text = _render_index(".", docs)
 
     assert text == (
-        "# out\n\n- file: [`mod.py`](mod.md) ([source](../mod.py)): Does things.\n"
+        "# out\n\n- [`mod.py`](mod.md) ([source](../mod.py)): Does things.\n"
     )
 
 
@@ -74,9 +74,9 @@ def test_directory_entries_link_to_the_child_index() -> None:
     assert text == (
         "# out\n"
         "\n"
-        "- dir: [`src/`](src/repotoc_toc.md)\n"
-        "  - dir: [`pkg/`](src/pkg/repotoc_toc.md)\n"
-        "    - file: [`mod.py`](src/pkg/mod.md) ([source](../src/pkg/mod.py))\n"
+        "- [`src/`](src/repotoc_toc.md)\n"
+        "  - [`pkg/`](src/pkg/repotoc_toc.md)\n"
+        "    - [`mod.py`](src/pkg/mod.md) ([source](../src/pkg/mod.py))\n"
     )
 
 
@@ -90,9 +90,9 @@ def test_directory_entries_link_to_the_init_file() -> None:
 
     text = _render_index(".", docs, {"src/pkg", "src", "."}, inits)
 
-    assert "- dir: [`src/`](src/repotoc_toc.md)\n" in text
+    assert "- [`src/`](src/repotoc_toc.md)\n" in text
     assert (
-        "  - dir: [`pkg/`](src/pkg/repotoc_toc.md)"
+        "  - [`pkg/`](src/pkg/repotoc_toc.md)"
         " ([source](../src/pkg/__init__.py))\n" in text
     )
 
@@ -105,9 +105,9 @@ def test_directory_entries_end_with_the_init_first_line() -> None:
 
     text = _render_index(".", docs, directories, inits)
 
-    assert "- dir: [`src/`](src/repotoc_toc.md)\n" in text
+    assert "- [`src/`](src/repotoc_toc.md)\n" in text
     assert (
-        "  - dir: [`pkg/`](src/pkg/repotoc_toc.md)"
+        "  - [`pkg/`](src/pkg/repotoc_toc.md)"
         " ([source](../src/pkg/__init__.py)): Package doc.\n" in text
     )
 
@@ -130,7 +130,7 @@ def test_init_docstring_renders_in_full_under_the_index_title() -> None:
         ">\n"
         "> More detail.\n"
         "\n"
-        "- file: [`mod.py`](mod.md) ([source](../../../src/pkg/mod.py))\n"
+        "- [`mod.py`](mod.md) ([source](../../../src/pkg/mod.py))\n"
     )
 
 
@@ -151,7 +151,7 @@ def test_depth_limits_the_nested_listing() -> None:
 
     text = _render_index(".", docs, directories, None, config)
 
-    assert "- dir: [`pkg/`](src/pkg/repotoc_toc.md)\n" in text
+    assert "- [`pkg/`](src/pkg/repotoc_toc.md)\n" in text
     assert "file:" not in text
 
 
@@ -162,13 +162,11 @@ def test_toc_max_depths_apply_per_level() -> None:
     config = RenderConfig(output="out", toc_max_depths=(1, 3))
 
     root = _render_index(".", docs, directories, None, config)
-    assert "- dir: [`src/`](src/repotoc_toc.md)\n" in root
+    assert "- [`src/`](src/repotoc_toc.md)\n" in root
     assert "\n  " not in root
 
     src = _render_index("src", docs, directories, None, config)
-    assert (
-        "    - file: [`mod.py`](a/b/mod.md) ([source](../../src/a/b/mod.py))\n" in src
-    )
+    assert "    - [`mod.py`](a/b/mod.md) ([source](../../src/a/b/mod.py))\n" in src
 
 
 def test_index_depth_takes_the_last_position_deeper() -> None:

@@ -17,9 +17,7 @@ def test_plain_module_renders_doc_file_and_root_index() -> None:
 
     assert set(files) == {"mod.md", "repotoc_toc.md"}
     assert files["mod.md"].startswith("# `mod.py`\n")
-    assert (
-        "- file: [`mod.py`](mod.md) ([source](../mod.py))\n" in files["repotoc_toc.md"]
-    )
+    assert "- [`mod.py`](mod.md) ([source](../mod.py))\n" in files["repotoc_toc.md"]
 
 
 def test_indexes_exist_at_every_ancestor_directory() -> None:
@@ -44,7 +42,7 @@ def test_docstring_only_init_renders_index_instead_of_doc_file() -> None:
     assert set(files) == {"pkg/repotoc_toc.md", "repotoc_toc.md"}
     assert files["pkg/repotoc_toc.md"] == "# pkg\n\n> Package doc.\n"
     assert (
-        "- dir: [`pkg/`](pkg/repotoc_toc.md)"
+        "- [`pkg/`](pkg/repotoc_toc.md)"
         " ([source](../pkg/__init__.py)): Package doc.\n" in files["repotoc_toc.md"]
     )
 
@@ -79,7 +77,7 @@ def test_init_with_visible_members_renders_a_doc_file_like_any_module() -> None:
     assert "# `pkg/__init__.py`\n" in files["pkg/__init__.md"]
     assert "## `def run():`\n" in files["pkg/__init__.md"]
     assert (
-        "- file: [`__init__.py`](__init__.md) ([source](../../pkg/__init__.py))"
+        "- [`__init__.py`](__init__.md) ([source](../../pkg/__init__.py))"
         ": Package doc.\n" in files["pkg/repotoc_toc.md"]
     )
 
@@ -91,8 +89,8 @@ def test_index_lists_multiple_modules_sorted_by_name() -> None:
     files = render(modules, RenderConfig(output="out"))
 
     text = files["src/repotoc_toc.md"]
-    assert "- file: [`mod.py`](mod.md) ([source](../../src/mod.py))\n" in text
-    assert "- file: [`util.py`](util.md) ([source](../../src/util.py))\n" in text
+    assert "- [`mod.py`](mod.md) ([source](../../src/mod.py))\n" in text
+    assert "- [`util.py`](util.md) ([source](../../src/util.py))\n" in text
     assert text.index("mod.py") < text.index("util.py")
 
 

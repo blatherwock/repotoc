@@ -41,8 +41,8 @@ def test_generation_writes_the_file_set_creating_the_output_directory(
     assert (tmp_path / "out" / "repotoc_toc.md").read_text(encoding="utf-8") == (
         "# out\n"
         "\n"
-        "- dir: [`src/`](src/repotoc_toc.md)\n"
-        "  - file: [`mod.py`](src/mod.md) ([source](../src/mod.py))"
+        "- [`src/`](src/repotoc_toc.md)\n"
+        "  - [`mod.py`](src/mod.md) ([source](../src/mod.py))"
         ": Does things.\n"
     )
 

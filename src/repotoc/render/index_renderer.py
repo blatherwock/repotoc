@@ -98,10 +98,13 @@ def index_depth(config: RenderConfig, directory: str) -> int:
 def _entry_line(
     child: _Child, doc_link: str, source_link: str | None, level: int
 ) -> str:
-    """Return one index entry line, summary suffix included when present."""
-    kind = "dir: " if child.is_directory else "file: "
+    """Return one index entry line, summary suffix included when present.
+
+    The display name carries the kind: the trailing slash marks a directory
+    and the file extension marks a file.
+    """
     name = f"{child.name}/" if child.is_directory else child.name
-    entry = f"{kind}{markdown.link(f'`{name}`', doc_link)}"
+    entry = markdown.link(f"`{name}`", doc_link)
     if source_link is not None:
         entry = f"{entry} ({markdown.link('source', source_link)})"
     line = markdown.list_item(entry, level)

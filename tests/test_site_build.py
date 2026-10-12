@@ -331,9 +331,9 @@ def test_render_markdown_renders_the_artifact_grammar() -> None:
         "\n"
         "---\n"
         "\n"
-        "- dir: [`arcade/`](arcade/repotoc_toc.md): A tiny arcade.\n"
-        "  - file: [`game.py`](arcade/game.md): The shared types.\n"
-        "- file: [`x.py`](x.md)\n"
+        "- [`arcade/`](arcade/repotoc_toc.md): A tiny arcade.\n"
+        "  - [`game.py`](arcade/game.md): The shared types.\n"
+        "- [`x.py`](x.md)\n"
         "\n"
         "Plain paragraph with `code` and **bold**.\n"
     )
@@ -352,7 +352,7 @@ def test_render_markdown_renders_the_artifact_grammar() -> None:
     )
     assert "<hr>" in rendered
     assert (
-        '<li>dir: <a href="examples/generated/toc-6/arcade/repotoc_toc.md">'
+        '<li><a href="examples/generated/toc-6/arcade/repotoc_toc.md">'
         "<code>arcade/</code></a>: A tiny arcade." in rendered
     )
     assert "<ul><li><a href=" not in rendered  # nesting stays inside the parent item
@@ -364,7 +364,7 @@ def test_render_markdown_renders_the_artifact_grammar() -> None:
 def test_render_markdown_resolves_links_against_the_doc_directory() -> None:
     """A link relative to its doc file resolves into the published variant."""
     rendered = site_build.render_markdown(
-        "- file: [`m.py`](../../game.py)\n",
+        "- [`m.py`](../../game.py)\n",
         link_prefix="examples/generated/doc-s1-p0-df/",
         doc_dir="fixture/arcade/checkers/players",
     )
