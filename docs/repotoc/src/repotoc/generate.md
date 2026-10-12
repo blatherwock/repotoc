@@ -1,8 +1,8 @@
-# src/repotoc/generate.py
+# `src/repotoc/generate.py`
 
 > Generation layer: write and prune the tool-owned artifact output directory.
 
-## GenerationReport
+## `class GenerationReport:`
 
 > The outcome of one generation run.
 >
@@ -11,12 +11,9 @@
 >     deleted: The output-relative POSIX paths of the stale Markdown files
 >         the run deleted.
 
-```python
-@dataclass(frozen=True)
-class GenerationReport:
-```
+---
 
-## generate
+## `def generate(modules: list[Module], config: RenderConfig) -> GenerationReport:`
 
 > Generate the artifact into the configured output directory.
 >
@@ -34,7 +31,3 @@ class GenerationReport:
 > Raises:
 >     GenerationError: The output directory cannot be created, written, or
 >         pruned.
-
-```python
-def generate(modules: list[Module], config: RenderConfig) -> GenerationReport:
-```

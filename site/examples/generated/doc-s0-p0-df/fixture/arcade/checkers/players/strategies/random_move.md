@@ -1,13 +1,13 @@
-# fixture/arcade/checkers/players/strategies/random_move.py
+# `fixture/arcade/checkers/players/strategies/random_move.py`
 
-## RandomMovePlayer
+## `class RandomMovePlayer:`
 
 > A player that picks uniformly among the legal moves.
 
-### __init__
+### `def __init__(...):`
 
 > Bind the player to one side.
 
-### choose
+### `def choose(...):`
 
 > Return a uniformly random legal move, None if stuck.

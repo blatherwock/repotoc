@@ -1,8 +1,8 @@
-# src/repotoc/cli.py
+# `src/repotoc/cli.py`
 
 > The `repotoc` command line interface: flags mapped onto the shared config.
 
-## main
+## `def main(argv: Sequence[str] | None=None) -> None:`
 
 > Run the CLI, raising SystemExit with the run's exit code.
 >
@@ -11,7 +11,3 @@
 >
 > Args:
 >     argv: The command line arguments; None reads `sys.argv`.
-
-```python
-def main(argv: Sequence[str] | None=None) -> None:
-```

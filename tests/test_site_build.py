@@ -322,12 +322,14 @@ def test_render_markdown_renders_the_artifact_grammar() -> None:
         ">\n"
         "> Second paragraph.\n"
         "\n"
-        "## Board\n"
+        "## `class Board:`\n"
         "\n"
         "```python\n"
         "class Board:\n"
         "    x = '<b>raw</b>'\n"
         "```\n"
+        "\n"
+        "---\n"
         "\n"
         "- dir: [`arcade/`](arcade/repotoc_toc.md): A tiny arcade.\n"
         "  - file: [`game.py`](arcade/game.md): The shared types.\n"
@@ -343,11 +345,12 @@ def test_render_markdown_renders_the_artifact_grammar() -> None:
         "<blockquote><p>A module docstring.</p><p>Second paragraph.</p></blockquote>"
         in rendered
     )
-    assert "<h2>Board</h2>" in rendered
+    assert "<h2><code>class Board:</code></h2>" in rendered
     assert (
         "<pre class=\"code\">class Board:\n    x = '&lt;b&gt;raw&lt;/b&gt;'</pre>"
         in rendered
     )
+    assert "<hr>" in rendered
     assert (
         '<li>dir: <a href="examples/generated/toc-6/arcade/repotoc_toc.md">'
         "<code>arcade/</code></a>: A tiny arcade." in rendered

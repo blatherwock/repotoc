@@ -1,8 +1,8 @@
-# src/repotoc/render/__init__.py
+# `src/repotoc/render/__init__.py`
 
 > Rendering layer: turn module models into Markdown doc files and indexes.
 
-## render
+## `def render(modules: list[Module], config: RenderConfig) -> dict[str, str]:`
 
 > Render the module models into the artifact file set.
 >
@@ -15,7 +15,3 @@
 >     per module except memberless `__init__.py` files, and one index per
 >     directory holding doc files, child indexes, or an `__init__.py`
 >     docstring. Deterministic for a given input.
-
-```python
-def render(modules: list[Module], config: RenderConfig) -> dict[str, str]:
-```

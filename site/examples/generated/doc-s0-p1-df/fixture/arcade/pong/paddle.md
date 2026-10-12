@@ -1,8 +1,8 @@
-# fixture/arcade/pong/paddle.py
+# `fixture/arcade/pong/paddle.py`
 
 > The paddles each side controls.
 
-## Paddle
+## `class Paddle:`
 
 > One player's paddle: fixed x, free to move in y.
 >
@@ -11,10 +11,10 @@
 >     y: The vertical center of the paddle.
 >     reach: Half the paddle's height, the strike zone around y.
 
-### moved
+### `def moved(...):`
 
 > Return the paddle shifted by dy, clamped to the track.
 
-### hits
+### `def hits(...):`
 
 > Return whether a ball at this height is in the strike zone.

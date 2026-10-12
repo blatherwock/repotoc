@@ -1,14 +1,6 @@
-"""Markdown emission helpers: headings, fences, blockquotes, link and list lines."""
+"""Markdown emission helpers: headings, blockquotes, rules, link and list lines."""
 
 from __future__ import annotations
-
-import re
-
-# Shortest fence Markdown accepts.
-_MIN_FENCE = 3
-
-# Matches runs of backticks inside fenced code text.
-_BACKTICK_RUN = re.compile(r"`+")
 
 
 def heading(text: str, level: int) -> str:
@@ -26,15 +18,9 @@ def _quote_line(line: str) -> str:
     return ">" if line == "" else f"> {line}"
 
 
-def code_block(text: str) -> str:
-    """Return the text as a fenced Python block at the left margin.
-
-    The fence grows past the longest backtick run in the text so that backticks
-    inside decorator string literals cannot close the block.
-    """
-    longest = max((len(run) for run in _BACKTICK_RUN.findall(text)), default=2)
-    fence = "`" * max(_MIN_FENCE, longest + 1)
-    return "\n".join([f"{fence}python", text, fence])
+def horizontal_rule() -> str:
+    """Return a thematic break at the left margin."""
+    return "---"
 
 
 def link(text: str, target: str) -> str:

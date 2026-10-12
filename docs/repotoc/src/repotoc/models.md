@@ -1,8 +1,8 @@
-# src/repotoc/models.py
+# `src/repotoc/models.py`
 
 > Model dataclasses for collected modules, classes, and functions.
 
-## Function
+## `class Function:`
 
 > A collected function or method definition.
 >
@@ -13,12 +13,9 @@
 >         when the function has none.
 >     decorators: The decorator expressions as written, in source order.
 
-```python
-@dataclass(frozen=True)
-class Function:
-```
+---
 
-## Class
+## `class Class:`
 
 > A collected class definition.
 >
@@ -30,12 +27,9 @@ class Function:
 >     decorators: The decorator expressions as written, in source order.
 >     members: The classes and functions defined in the class body, in source order.
 
-```python
-@dataclass(frozen=True)
-class Class:
-```
+---
 
-## Module
+## `class Module:`
 
 > A collected module.
 >
@@ -44,8 +38,3 @@ class Class:
 >     docstring: The dedented module docstring, stripped of surrounding whitespace, or
 >         None when the module has none.
 >     members: The classes and functions defined at module level, in source order.
-
-```python
-@dataclass(frozen=True)
-class Module:
-```

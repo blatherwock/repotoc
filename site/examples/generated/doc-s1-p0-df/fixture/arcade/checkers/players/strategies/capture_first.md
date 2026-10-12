@@ -1,25 +1,13 @@
-# fixture/arcade/checkers/players/strategies/capture_first.py
+# `fixture/arcade/checkers/players/strategies/capture_first.py`
 
 > A greedy player that always plays the first available capture.
 
-## CaptureFirstPlayer
+## `class CaptureFirstPlayer:`
 
-```python
-class CaptureFirstPlayer:
-```
-
-### __init__
+### `def __init__(self, side: str) -> None:`
 
 > Bind the player to one side.
 
-```python
-    def __init__(self, side: str) -> None:
-```
-
-### choose
+### `def choose(self, board: Board) -> 'Move | None':`
 
 > Return the first capture, else the first quiet move.
-
-```python
-    def choose(self, board: Board) -> 'Move | None':
-```

@@ -1,19 +1,17 @@
-# fixture/arcade/checkers/board.py
+# `fixture/arcade/checkers/board.py`
 
 > The checkers board: piece positions and the moves that change them.
 
-## playable_squares
+## `def playable_squares() -> list[str]:`
 
 > Return every square a piece can stand on, in reading order.
 >
 > Only the dark squares are playable in checkers: those where the
 > file and rank counters have opposite parity.
 
-```python
-def playable_squares() -> list[str]:
-```
+---
 
-## Board
+## `class Board:`
 
 > Piece positions for one game of checkers.
 >
@@ -22,7 +20,3 @@ def playable_squares() -> list[str]:
 >
 > Attributes:
 >     pieces: The occupied squares mapped to their owning side.
-
-```python
-class Board:
-```

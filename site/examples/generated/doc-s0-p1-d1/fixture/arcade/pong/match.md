@@ -1,8 +1,8 @@
-# fixture/arcade/pong/match.py
+# `fixture/arcade/pong/match.py`
 
 > A pong match: serve, rally, and score until a side reaches eleven.
 
-## Match
+## `class Match:`
 
 > The state of one rally: both paddles, the ball, and the score.
 >
@@ -12,6 +12,8 @@
 >     ball: The ball in flight.
 >     score: Points for the left and right sides.
 
-## serve
+---
+
+## `def serve(...):`
 
 > Return a fresh ball leaving the server toward one side.

@@ -276,110 +276,105 @@ def _opponent(side: str) -&gt; str:
       <div class="variant" data-s="1" data-p="0" data-d="f">
         <div class="pane-head">minimax.md &middot; signatures on &middot; privates off &middot; depth full</div>
         <div class="md"><!-- repotoc:begin doc-s1-p0-df -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<pre class="code">class MinimaxPlayer:</pre>
-<h3>__init__</h3>
-<pre class="code">    def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</pre>
-<h3>choose</h3>
-<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
-<pre class="code">    def choose(self, board: Board) -&gt; 'Move | None':</pre><!-- repotoc:end doc-s1-p0-df --></div>
+<h3><code>def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</code></h3>
+<h3><code>def choose(self, board: Board) -&gt; 'Move | None':</code></h3>
+<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote><!-- repotoc:end doc-s1-p0-df --></div>
       </div>
       <div class="variant" data-s="1" data-p="0" data-d="1">
         <div class="pane-head">minimax.md &middot; signatures on &middot; privates off &middot; depth 1</div>
         <div class="md"><!-- repotoc:begin doc-s1-p0-d1 -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
-<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<pre class="code">class MinimaxPlayer:</pre><!-- repotoc:end doc-s1-p0-d1 --></div>
+<h2><code>class MinimaxPlayer:</code></h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote><!-- repotoc:end doc-s1-p0-d1 --></div>
       </div>
       <div class="variant" data-s="1" data-p="1" data-d="f">
         <div class="pane-head">minimax.md &middot; signatures on &middot; privates on &middot; depth full</div>
         <div class="md"><!-- repotoc:begin doc-s1-p1-df -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<pre class="code">class MinimaxPlayer:</pre>
-<h3>__init__</h3>
-<pre class="code">    def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</pre>
-<h3>choose</h3>
+<h3><code>def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</code></h3>
+<h3><code>def choose(self, board: Board) -&gt; 'Move | None':</code></h3>
 <blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
-<pre class="code">    def choose(self, board: Board) -&gt; 'Move | None':</pre>
-<h3>_search</h3>
+<h3><code>def _search(self, board: Board, ply: int) -&gt; int:</code></h3>
 <blockquote><p>Score a position recursively; higher is better for our side.</p></blockquote>
-<pre class="code">    def _search(self, board: Board, ply: int) -&gt; int:</pre>
-<h2>_played</h2>
+<hr>
+<h2><code>def _played(board: Board, move: 'Move') -&gt; Board:</code></h2>
 <blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
-<pre class="code">def _played(board: Board, move: 'Move') -&gt; Board:</pre>
-<h2>_opponent</h2>
-<blockquote><p>Return the other side's name.</p></blockquote>
-<pre class="code">def _opponent(side: str) -&gt; str:</pre><!-- repotoc:end doc-s1-p1-df --></div>
+<hr>
+<h2><code>def _opponent(side: str) -&gt; str:</code></h2>
+<blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s1-p1-df --></div>
       </div>
       <div class="variant" data-s="1" data-p="1" data-d="1">
         <div class="pane-head">minimax.md &middot; signatures on &middot; privates on &middot; depth 1</div>
         <div class="md"><!-- repotoc:begin doc-s1-p1-d1 -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<pre class="code">class MinimaxPlayer:</pre>
-<h2>_played</h2>
+<hr>
+<h2><code>def _played(board: Board, move: 'Move') -&gt; Board:</code></h2>
 <blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
-<pre class="code">def _played(board: Board, move: 'Move') -&gt; Board:</pre>
-<h2>_opponent</h2>
-<blockquote><p>Return the other side's name.</p></blockquote>
-<pre class="code">def _opponent(side: str) -&gt; str:</pre><!-- repotoc:end doc-s1-p1-d1 --></div>
+<hr>
+<h2><code>def _opponent(side: str) -&gt; str:</code></h2>
+<blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s1-p1-d1 --></div>
       </div>
       <div class="variant" data-s="0" data-p="0" data-d="f">
         <div class="pane-head">minimax.md &middot; signatures off &middot; privates off &middot; depth full</div>
         <div class="md"><!-- repotoc:begin doc-s0-p0-df -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<h3>__init__</h3>
-<h3>choose</h3>
+<h3><code>def __init__(...):</code></h3>
+<h3><code>def choose(...):</code></h3>
 <blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote><!-- repotoc:end doc-s0-p0-df --></div>
       </div>
       <div class="variant" data-s="0" data-p="0" data-d="1">
         <div class="pane-head">minimax.md &middot; signatures off &middot; privates off &middot; depth 1</div>
         <div class="md"><!-- repotoc:begin doc-s0-p0-d1 -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote><!-- repotoc:end doc-s0-p0-d1 --></div>
       </div>
       <div class="variant" data-s="0" data-p="1" data-d="f">
         <div class="pane-head">minimax.md &middot; signatures off &middot; privates on &middot; depth full</div>
         <div class="md"><!-- repotoc:begin doc-s0-p1-df -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<h3>__init__</h3>
-<h3>choose</h3>
+<h3><code>def __init__(...):</code></h3>
+<h3><code>def choose(...):</code></h3>
 <blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
-<h3>_search</h3>
+<h3><code>def _search(...):</code></h3>
 <blockquote><p>Score a position recursively; higher is better for our side.</p></blockquote>
-<h2>_played</h2>
+<hr>
+<h2><code>def _played(...):</code></h2>
 <blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
-<h2>_opponent</h2>
+<hr>
+<h2><code>def _opponent(...):</code></h2>
 <blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s0-p1-df --></div>
       </div>
       <div class="variant" data-s="0" data-p="1" data-d="1">
         <div class="pane-head">minimax.md &middot; signatures off &middot; privates on &middot; depth 1</div>
         <div class="md"><!-- repotoc:begin doc-s0-p1-d1 -->
-<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<h1><code>fixture/arcade/checkers/players/minimax.py</code></h1>
 <blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
-<h2>MinimaxPlayer</h2>
+<h2><code>class MinimaxPlayer:</code></h2>
 <blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
-<h2>_played</h2>
+<hr>
+<h2><code>def _played(...):</code></h2>
 <blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
-<h2>_opponent</h2>
+<hr>
+<h2><code>def _opponent(...):</code></h2>
 <blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s0-p1-d1 --></div>
       </div>
     </div>

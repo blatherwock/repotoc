@@ -1,46 +1,31 @@
-# src/repotoc/render/markdown.py
+# `src/repotoc/render/markdown.py`
 
-> Markdown emission helpers: headings, fences, blockquotes, link and list lines.
+> Markdown emission helpers: headings, blockquotes, rules, link and list lines.
 
-## heading
+## `def heading(text: str, level: int) -> str:`
 
 > Return the text as a Markdown heading of the given level.
 
-```python
-def heading(text: str, level: int) -> str:
-```
+---
 
-## blockquote
+## `def blockquote(text: str) -> str:`
 
 > Return the text as a Markdown blockquote, one quote line per source line.
 
-```python
-def blockquote(text: str) -> str:
-```
+---
 
-## code_block
+## `def horizontal_rule() -> str:`
 
-> Return the text as a fenced Python block at the left margin.
->
-> The fence grows past the longest backtick run in the text so that backticks
-> inside decorator string literals cannot close the block.
+> Return a thematic break at the left margin.
 
-```python
-def code_block(text: str) -> str:
-```
+---
 
-## link
+## `def link(text: str, target: str) -> str:`
 
 > Return a Markdown link carrying the text as its display.
 
-```python
-def link(text: str, target: str) -> str:
-```
+---
 
-## list_item
+## `def list_item(text: str, level: int) -> str:`
 
 > Return the text as a bullet line, indented one step per list level.
-
-```python
-def list_item(text: str, level: int) -> str:
-```

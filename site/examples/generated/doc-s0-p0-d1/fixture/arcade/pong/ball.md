@@ -1,8 +1,8 @@
-# fixture/arcade/pong/ball.py
+# `fixture/arcade/pong/ball.py`
 
 > The pong ball and the bounce rules it obeys.
 
-## Ball
+## `class Ball:`
 
 > The ball's position and travel vector.
 >

@@ -50,7 +50,7 @@ def test_cli_generates_the_artifact_under_the_default_output(
     assert code == _EXIT_SUCCESS
     assert (tmp_path / "docs" / "repotoc" / "src" / "mod.md").read_text(
         encoding="utf-8"
-    ) == "# src/mod.py\n\n> Does things.\n"
+    ) == "# `src/mod.py`\n\n> Does things.\n"
 
 
 def test_cli_runs_from_config_alone_with_no_arguments(

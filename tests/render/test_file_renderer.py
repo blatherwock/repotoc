@@ -7,10 +7,11 @@ from typing import TYPE_CHECKING
 from builders import function, klass, module
 
 from repotoc.filters import Filters, RenderConfig
+from repotoc.models import Class, Function
 from repotoc.render import file_renderer
 
 if TYPE_CHECKING:
-    from repotoc.models import Class, Function, Module
+    from repotoc.models import Module
 
 
 def _render_doc(doc: Module, config: RenderConfig | None = None) -> str:
@@ -53,15 +54,15 @@ def test_has_doc_uses_the_privates_flag_for_private_only_inits() -> None:
 
 
 def test_doc_file_states_the_source_path() -> None:
-    """The doc file opens with a heading carrying the source path."""
-    assert _render_doc(module("src/pkg/mod.py")).startswith("# src/pkg/mod.py\n")
+    """The doc file opens with a monospaced heading carrying the source path."""
+    assert _render_doc(module("src/pkg/mod.py")).startswith("# `src/pkg/mod.py`\n")
 
 
 def test_doc_file_renders_the_module_docstring_in_full() -> None:
     """The module docstring renders in full as a blockquote."""
     doc = module("mod.py", docstring="First.\n\nSecond.")
 
-    assert "# mod.py\n\n> First.\n>\n> Second.\n" in _render_doc(doc)
+    assert "# `mod.py`\n\n> First.\n>\n> Second.\n" in _render_doc(doc)
 
 
 def test_members_render_in_model_order() -> None:
@@ -69,30 +70,31 @@ def test_members_render_in_model_order() -> None:
     members = [function("first"), klass("Second"), function("third")]
     text = _render_doc(module("mod.py", members=members))
 
-    assert text.index("def first():") < text.index("class Second:")
-    assert text.index("class Second:") < text.index("def third():")
+    assert text.index("`def first():`") < text.index("`class Second:`")
+    assert text.index("`class Second:`") < text.index("`def third():`")
 
 
-def test_decorators_render_above_the_signature_in_source_order() -> None:
-    """Decorator lines sit above the signature line inside the code block."""
+def test_decorators_do_not_render() -> None:
+    """Decorator expressions appear nowhere in the rendered doc file."""
     run = function("run", decorators=["functools.cache", "staticmethod"])
     text = _render_doc(module("mod.py", members=[run]))
 
-    assert "```python\n@functools.cache\n@staticmethod\ndef run():\n```" in text
+    assert "@" not in text
+    assert "functools.cache" not in text
 
 
-def test_undocumented_members_render_as_bare_signature_blocks() -> None:
-    """A member without a docstring renders its heading and source block only."""
+def test_undocumented_members_render_as_a_bare_heading() -> None:
+    """A member without a docstring renders its heading alone."""
     text = _render_doc(module("mod.py", members=[function("run", docstring=None)]))
 
-    assert text == "# mod.py\n\n## run\n\n```python\ndef run():\n```\n"
+    assert text == "# `mod.py`\n\n## `def run():`\n"
 
 
-def test_docstring_renders_as_a_blockquote_above_the_src_block() -> None:
-    """A member's section is heading, docstring blockquote, then source block."""
+def test_docstring_renders_as_a_blockquote_under_the_heading() -> None:
+    """A member's section is its signature heading, then its docstring."""
     text = _render_doc(module("mod.py", members=[function("run")]))
 
-    assert text == "# mod.py\n\n## run\n\n> Doc.\n\n```python\ndef run():\n```\n"
+    assert text == "# `mod.py`\n\n## `def run():`\n\n> Doc.\n"
 
 
 def test_visibility_filter_applies_during_rendering() -> None:
@@ -124,23 +126,15 @@ def test_nested_members_render_under_deeper_headings() -> None:
     text = _render_doc(module("mod.py", members=[thing]))
 
     assert text == (
-        "# mod.py\n"
+        "# `mod.py`\n"
         "\n"
-        "## Thing\n"
+        "## `class Thing:`\n"
         "\n"
         "> Class doc.\n"
         "\n"
-        "```python\n"
-        "class Thing:\n"
-        "```\n"
-        "\n"
-        "### method\n"
+        "### `def method():`\n"
         "\n"
         "> Doc.\n"
-        "\n"
-        "```python\n"
-        "    def method():\n"
-        "```\n"
     )
 
 
@@ -150,10 +144,10 @@ def test_heading_level_mirrors_nesting_depth() -> None:
     thing = klass("Thing", members=[function("method"), inner])
     text = _render_doc(module("mod.py", members=[thing]))
 
-    assert "## Thing\n" in text
-    assert "### method\n" in text
-    assert "### Inner\n" in text
-    assert "#### inner_method\n" in text
+    assert "## `class Thing:`\n" in text
+    assert "### `def method():`\n" in text
+    assert "### `class Inner:`\n" in text
+    assert "#### `def inner_method():`\n" in text
 
 
 def test_heading_level_bottoms_out_at_h6() -> None:
@@ -163,8 +157,8 @@ def test_heading_level_bottoms_out_at_h6() -> None:
         leaf = klass(name, members=[leaf])
     text = _render_doc(module("mod.py", members=[leaf]))
 
-    assert "###### L6\n" in text
-    assert "###### leaf\n" in text
+    assert "###### `class L6:`\n" in text
+    assert "###### `def leaf():`\n" in text
     assert "#######" not in text
 
 
@@ -174,8 +168,8 @@ def test_member_depth_one_renders_module_level_members_only() -> None:
     thing = klass("Thing", members=[function("method")])
     text = _render_doc(module("mod.py", members=[thing]), config)
 
-    assert "## Thing\n" in text
-    assert "### method" not in text
+    assert "## `class Thing:`\n" in text
+    assert "### `def method" not in text
     assert "def method():" not in text
 
 
@@ -186,22 +180,94 @@ def test_member_depth_caps_nested_members_entirely() -> None:
     thing = klass("Thing", members=[function("method"), inner])
     text = _render_doc(module("mod.py", members=[thing]), config)
 
-    assert "### method\n" in text
-    assert "### Inner\n" in text
-    assert "#### deep" not in text
+    assert "### `def method():`\n" in text
+    assert "### `class Inner:`\n" in text
+    assert "#### `def deep" not in text
     assert "def deep():" not in text
 
 
-def test_signatures_off_renders_headings_and_docstrings_only() -> None:
-    """Without signatures, documented members render heading and docstring."""
+def test_signatures_off_collapses_empty_argument_lists() -> None:
+    """Without signatures, an empty argument list renders as `()`."""
     config = RenderConfig(output="out", file_include_signatures=False)
     members: list[Function | Class] = [
         function("run"),
+        klass("Thing"),
         function("bare", docstring=None),
     ]
     text = _render_doc(module("mod.py", members=members), config)
 
-    assert text == "# mod.py\n\n## run\n\n> Doc.\n\n## bare\n"
+    assert text == (
+        "# `mod.py`\n\n## `def run():`\n\n> Doc.\n\n---\n\n## `class Thing:`\n\n"
+        "> Class doc.\n\n---\n\n## `def bare():`\n"
+    )
+
+
+def test_thematic_breaks_separate_top_level_members() -> None:
+    """A break sits between top-level members, not after the last or inside."""
+    thing = klass("Thing", members=[function("method")])
+    text = _render_doc(module("mod.py", members=[thing, function("run")]))
+
+    assert text == (
+        "# `mod.py`\n"
+        "\n"
+        "## `class Thing:`\n"
+        "\n"
+        "> Class doc.\n"
+        "\n"
+        "### `def method():`\n"
+        "\n"
+        "> Doc.\n"
+        "\n"
+        "---\n"
+        "\n"
+        "## `def run():`\n"
+        "\n"
+        "> Doc.\n"
+    )
+
+
+def test_a_single_member_renders_no_thematic_break() -> None:
+    """With one top-level member no thematic break renders at all."""
+    text = _render_doc(module("mod.py", members=[function("run")]))
+
+    assert "---" not in text
+
+
+def test_signatures_off_collapses_arguments_into_an_ellipsis() -> None:
+    """Without signatures, a populated argument list renders as `(...)`.
+
+    A hidden signature must not suggest an arity, so nested parentheses in
+    defaults collapse the same as plain arguments; the return annotation
+    renders only with signatures on.
+    """
+    config = RenderConfig(output="out", file_include_signatures=False)
+    run = Function(
+        name="run",
+        signature="def run(x: int = (1, 2), *args) -> None:",
+        docstring="Doc.",
+        decorators=[],
+    )
+    text = _render_doc(module("mod.py", members=[run]), config)
+
+    assert "## `def run(...):`\n" in text
+    assert "None" not in text
+    assert "x" not in text
+
+
+def test_signatures_off_collapses_class_bases_into_an_ellipsis() -> None:
+    """Without signatures, class bases render as `(...)` in the heading."""
+    config = RenderConfig(output="out", file_include_signatures=False)
+    thing = Class(
+        name="Thing",
+        signature="class Thing(Base, metaclass=Meta):",
+        docstring="Class doc.",
+        decorators=[],
+        members=[],
+    )
+    text = _render_doc(module("mod.py", members=[thing]), config)
+
+    assert "## `class Thing(...):`\n" in text
+    assert "Base" not in text
 
 
 def test_docstring_passes_through_unchanged_inside_the_blockquote() -> None:
@@ -210,19 +276,3 @@ def test_docstring_passes_through_unchanged_inside_the_blockquote() -> None:
     text = _render_doc(module("mod.py", members=[run]))
 
     assert "> Use `run`.\n>\n> Not *italics*." in text
-
-
-def test_fence_extends_past_backtick_runs_in_the_src_block() -> None:
-    """The source fence grows beyond the longest backtick run in the text."""
-    run = function("run", decorators=['tag("```code```")'])
-    text = _render_doc(module("mod.py", members=[run]))
-
-    assert '````python\n@tag("```code```")\ndef run():\n````' in text
-
-
-def test_fence_extends_past_the_longest_of_several_runs() -> None:
-    """The fence exceeds the longest backtick run, not just any run."""
-    run = function("run", decorators=['tag("`tick` ``double``")'])
-    text = _render_doc(module("mod.py", members=[run]))
-
-    assert '```python\n@tag("`tick` ``double``")\ndef run():\n```' in text

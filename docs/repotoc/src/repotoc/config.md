@@ -1,8 +1,8 @@
-# src/repotoc/config.py
+# `src/repotoc/config.py`
 
 > Config resolution: defaults, the `[tool.repotoc]` section, and CLI overlays.
 
-## Config
+## `class Config:`
 
 > The effective settings for one run.
 >
@@ -18,20 +18,13 @@
 >     toc_max_depths: Per-level nested-list depths for indexes.
 >     exclude: Extra directory names collection never scans.
 
-```python
-@dataclass(frozen=True)
-class Config:
-```
-
-### render_config
+### `def render_config(self) -> RenderConfig:`
 
 > Return the presentation settings for the render layer.
 
-```python
-    def render_config(self) -> RenderConfig:
-```
+---
 
-## PartialConfig
+## `class PartialConfig:`
 
 > Config values one layer sets; None means the layer leaves the key unset.
 >
@@ -44,12 +37,9 @@ class Config:
 >     toc_max_depths: The per-level depths, or None.
 >     exclude: The extra skipped directory names, or None.
 
-```python
-@dataclass(frozen=True)
-class PartialConfig:
-```
+---
 
-## load_config
+## `def load_config(path: Path | None=None) -> Config:`
 
 > Load config from the `[tool.repotoc]` section of a pyproject file.
 >
@@ -65,11 +55,9 @@ class PartialConfig:
 >         a key holds a value of the wrong type or one `RenderConfig`
 >         rejects; the message names the offending key.
 
-```python
-def load_config(path: Path | None=None) -> Config:
-```
+---
 
-## merge
+## `def merge(base: Config, overrides: PartialConfig) -> Config:`
 
 > Overlay one layer's set values onto a base config.
 >
@@ -83,7 +71,3 @@ def load_config(path: Path | None=None) -> Config:
 >
 > Returns:
 >     The effective config.
-
-```python
-def merge(base: Config, overrides: PartialConfig) -> Config:
-```

@@ -1,17 +1,11 @@
-# fixture/arcade/checkers/players/heuristic.py
+# `fixture/arcade/checkers/players/heuristic.py`
 
 > Board scoring for evaluating checkers positions.
 
-## material
+## `def material(board: 'Board', side: str) -> int:`
 
 > Score a board by piece counts from one side's view.
 
-```python
-def material(board: 'Board', side: str) -> int:
-```
+---
 
-## positional
-
-```python
-def positional(board: 'Board', side: str) -> int:
-```
+## `def positional(board: 'Board', side: str) -> int:`

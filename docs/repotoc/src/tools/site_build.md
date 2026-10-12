@@ -1,4 +1,4 @@
-# src/tools/site_build.py
+# `src/tools/site_build.py`
 
 > Refresh and gate the showcase site's example artifacts.
 >
@@ -8,15 +8,13 @@
 > in `site/index.html`. `check` compares the same content without
 > writing: it exits 0 when current, 1 when stale, and 2 on errors.
 
-## SiteBuildError
+## `class SiteBuildError(Exception):`
 
 > A failure refreshing or gating the site showcase blocks.
 
-```python
-class SiteBuildError(Exception):
-```
+---
 
-## Variant
+## `class Variant:`
 
 > One repotoc run in the showcase matrix.
 >
@@ -26,26 +24,22 @@ class SiteBuildError(Exception):
 >     kind: The panel the variant feeds: `doc` or `index`.
 >     flags: The repotoc flags configuring the run.
 
-```python
-@dataclass(frozen=True)
-class Variant:
-```
+---
 
-## render_markdown
+## `def render_markdown(text: str, *, link_prefix: str='', doc_dir: str='') -> str:`
 
 > Return the artifact's Markdown rendered as HTML.
 >
 > Covers the grammar the artifact emits: headings, blockquote
-> docstrings, fenced code blocks, nested lists, and inline markup.
+> docstrings, fenced code blocks, thematic breaks, nested lists,
+> and inline markup.
 > Link targets resolve against `doc_dir`, the file's directory
 > inside its variant, then gain `link_prefix` so they point at the
 > published variant tree.
 
-```python
-def render_markdown(text: str, *, link_prefix: str='', doc_dir: str='') -> str:
-```
+---
 
-## render_trees
+## `def render_trees(source_root: Path, doc_root: Path, collapsed: frozenset[str]=COLLAPSED, highlight: str=HIGHLIGHT) -> tuple[str, str]:`
 
 > Return the source tree and the doc tree as aligned text blocks.
 >
@@ -58,11 +52,9 @@ def render_markdown(text: str, *, link_prefix: str='', doc_dir: str='') -> str:
 >     SiteBuildError: A root is missing, or a source entry has no
 >         doc entry.
 
-```python
-def render_trees(source_root: Path, doc_root: Path, collapsed: frozenset[str]=COLLAPSED, highlight: str=HIGHLIGHT) -> tuple[str, str]:
-```
+---
 
-## collect_blocks
+## `def collect_blocks(examples_dir: Path, variants: tuple[Variant, ...]) -> dict[str, str]:`
 
 > Return every embed block's content, read from the variant outputs.
 >
@@ -71,11 +63,9 @@ def render_trees(source_root: Path, doc_root: Path, collapsed: frozenset[str]=CO
 >         variant key, so the showcase can never point at a hole; or
 >         the structure trees cannot be built.
 
-```python
-def collect_blocks(examples_dir: Path, variants: tuple[Variant, ...]) -> dict[str, str]:
-```
+---
 
-## replace_blocks
+## `def replace_blocks(html_text: str, blocks: dict[str, str]) -> str:`
 
 > Return the page with each marked block's content replaced.
 >
@@ -84,30 +74,24 @@ def collect_blocks(examples_dir: Path, variants: tuple[Variant, ...]) -> dict[st
 > Raises:
 >     SiteBuildError: A block has no marker pair in the page.
 
-```python
-def replace_blocks(html_text: str, blocks: dict[str, str]) -> str:
-```
+---
 
-## stale_blocks
+## `def stale_blocks(html_text: str, blocks: dict[str, str]) -> list[str]:`
 
 > Return one problem line per block whose embedded content differs.
 >
 > Raises:
 >     SiteBuildError: A block has no marker pair in the page.
 
-```python
-def stale_blocks(html_text: str, blocks: dict[str, str]) -> list[str]:
-```
+---
 
-## run_repotoc
+## `def run_repotoc(command: list[str]) -> int:`
 
 > Run one repotoc command in the examples directory; return its code.
 
-```python
-def run_repotoc(command: list[str]) -> int:
-```
+---
 
-## refresh
+## `def refresh(index_path: Path=INDEX_PATH, examples_dir: Path=EXAMPLES_DIR, variants: tuple[Variant, ...]=VARIANTS, runner: Runner=run_repotoc) -> None:`
 
 > Regenerate every variant and embed the showcase blocks.
 >
@@ -118,11 +102,9 @@ def run_repotoc(command: list[str]) -> int:
 > Raises:
 >     SiteBuildError: A variant run failed.
 
-```python
-def refresh(index_path: Path=INDEX_PATH, examples_dir: Path=EXAMPLES_DIR, variants: tuple[Variant, ...]=VARIANTS, runner: Runner=run_repotoc) -> None:
-```
+---
 
-## check
+## `def check(index_path: Path=INDEX_PATH, examples_dir: Path=EXAMPLES_DIR, variants: tuple[Variant, ...]=VARIANTS, runner: Runner=run_repotoc) -> list[str]:`
 
 > Compare every variant and the embedding without writing.
 >
@@ -134,14 +116,8 @@ def refresh(index_path: Path=INDEX_PATH, examples_dir: Path=EXAMPLES_DIR, varian
 >     SiteBuildError: A variant run reported an error (any code
 >         other than 0 or 1).
 
-```python
-def check(index_path: Path=INDEX_PATH, examples_dir: Path=EXAMPLES_DIR, variants: tuple[Variant, ...]=VARIANTS, runner: Runner=run_repotoc) -> list[str]:
-```
+---
 
-## main
+## `def main(argv: list[str] | None=None) -> None:`
 
 > Run the command, exiting 0 on success, 1 on stale, 2 on errors.
-
-```python
-def main(argv: list[str] | None=None) -> None:
-```

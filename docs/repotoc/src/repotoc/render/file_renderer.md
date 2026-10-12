@@ -1,8 +1,8 @@
-# src/repotoc/render/file_renderer.py
+# `src/repotoc/render/file_renderer.py`
 
 > Doc file rendering: module models into Markdown doc files.
 
-## has_doc
+## `def has_doc(module: Module, filters: Filters) -> bool:`
 
 > Return whether the module renders a doc file.
 >
@@ -12,18 +12,12 @@
 > criterion is visible members, so `file_include_privates` decides whether a
 > private-only `__init__.py` emits.
 
-```python
-def has_doc(module: Module, filters: Filters) -> bool:
-```
+---
 
-## render_doc
+## `def render_doc(module: Module, filters: Filters, config: RenderConfig) -> str:`
 
 > Render one module model into its doc file text.
 >
-> The doc file states the source path as a heading, renders the module
-> docstring in full as a blockquote, then outlines the visible members in
-> model order.
-
-```python
-def render_doc(module: Module, filters: Filters, config: RenderConfig) -> str:
-```
+> The doc file states the source path as a monospaced heading, renders the
+> module docstring in full as a blockquote, then outlines the visible
+> members in model order, a thematic break between top-level members.

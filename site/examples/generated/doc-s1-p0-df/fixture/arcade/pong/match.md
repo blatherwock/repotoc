@@ -1,8 +1,8 @@
-# fixture/arcade/pong/match.py
+# `fixture/arcade/pong/match.py`
 
 > A pong match: serve, rally, and score until a side reaches eleven.
 
-## Match
+## `class Match:`
 
 > The state of one rally: both paddles, the ball, and the score.
 >
@@ -12,12 +12,7 @@
 >     ball: The ball in flight.
 >     score: Points for the left and right sides.
 
-```python
-@dataclass
-class Match:
-```
-
-### rally
+### `def rally(self, steps: int=10) -> tuple[int, int]:`
 
 > Advance the ball for a number of steps, scoring edges.
 >
@@ -25,22 +20,12 @@ class Match:
 >     The updated score, with a point added when the ball
 >     crosses a side's edge.
 
-```python
-    def rally(self, steps: int=10) -> tuple[int, int]:
-```
-
-### is_over
+### `def is_over(self) -> bool:`
 
 > Return whether either side has reached the winning score.
 
-```python
-    def is_over(self) -> bool:
-```
+---
 
-## serve
+## `def serve(*, toward_right: bool=True) -> Ball:`
 
 > Return a fresh ball leaving the server toward one side.
-
-```python
-def serve(*, toward_right: bool=True) -> Ball:
-```

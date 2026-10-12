@@ -36,7 +36,7 @@ def test_generation_writes_the_file_set_creating_the_output_directory(
     ]
     assert report.deleted == []
     assert (tmp_path / "out" / "src" / "mod.md").read_text(encoding="utf-8") == (
-        "# src/mod.py\n\n> Does things.\n"
+        "# `src/mod.py`\n\n> Does things.\n"
     )
     assert (tmp_path / "out" / "repotoc_toc.md").read_text(encoding="utf-8") == (
         "# out\n"

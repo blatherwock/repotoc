@@ -1,6 +1,12 @@
 """Tests for the Markdown emission helpers."""
 
-from repotoc.render.markdown import blockquote, code_block, heading, link, list_item
+from repotoc.render.markdown import (
+    blockquote,
+    heading,
+    horizontal_rule,
+    link,
+    list_item,
+)
 
 
 def test_heading_prefaces_the_text_with_the_level() -> None:
@@ -14,14 +20,9 @@ def test_blockquote_quotes_every_line() -> None:
     assert blockquote("First.\n\nSecond.") == "> First.\n>\n> Second."
 
 
-def test_code_block_fences_the_text_as_python() -> None:
-    """A code block opens and closes with a three-backtick fence."""
-    assert code_block("def run():") == "```python\ndef run():\n```"
-
-
-def test_code_block_fence_grows_past_backtick_runs() -> None:
-    """The fence grows beyond the longest backtick run in the text."""
-    assert code_block("tag('```code```')") == "````python\ntag('```code```')\n````"
+def test_horizontal_rule_sits_at_the_left_margin() -> None:
+    """A thematic break is three dashes on its own line."""
+    assert horizontal_rule() == "---"
 
 
 def test_link_wraps_the_display_in_the_target() -> None:

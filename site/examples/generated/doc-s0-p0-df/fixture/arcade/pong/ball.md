@@ -1,8 +1,8 @@
-# fixture/arcade/pong/ball.py
+# `fixture/arcade/pong/ball.py`
 
 > The pong ball and the bounce rules it obeys.
 
-## Ball
+## `class Ball:`
 
 > The ball's position and travel vector.
 >
@@ -15,14 +15,14 @@
 >     vx: The horizontal travel per step.
 >     vy: The vertical travel per step.
 
-### step
+### `def step(...):`
 
 > Return the ball after one step, bounced off the long walls.
 
-### past_left
+### `def past_left(...):`
 
 > Return whether the ball crossed the left edge.
 
-### past_right
+### `def past_right(...):`
 
 > Return whether the ball crossed the right edge.

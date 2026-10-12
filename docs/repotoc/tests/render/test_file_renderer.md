@@ -1,171 +1,143 @@
-# tests/render/test_file_renderer.py
+# `tests/render/test_file_renderer.py`
 
 > Tests for doc file rendering.
 
-## test_has_doc_is_true_for_plain_modules
+## `def test_has_doc_is_true_for_plain_modules() -> None:`
 
 > Every module but `__init__.py` renders a doc file.
 
-```python
-def test_has_doc_is_true_for_plain_modules() -> None:
-```
+---
 
-## test_has_doc_is_true_for_inits_with_visible_members
+## `def test_has_doc_is_true_for_inits_with_visible_members() -> None:`
 
 > An `__init__.py` with members renders a doc file.
 
-```python
-def test_has_doc_is_true_for_inits_with_visible_members() -> None:
-```
+---
 
-## test_has_doc_is_false_for_memberless_inits
+## `def test_has_doc_is_false_for_memberless_inits() -> None:`
 
 > A docstring-only `__init__.py` renders no doc file.
 
-```python
-def test_has_doc_is_false_for_memberless_inits() -> None:
-```
+---
 
-## test_has_doc_uses_the_privates_flag_for_private_only_inits
+## `def test_has_doc_uses_the_privates_flag_for_private_only_inits() -> None:`
 
 > A private-only `__init__.py` emits only with the private flag.
 
-```python
-def test_has_doc_uses_the_privates_flag_for_private_only_inits() -> None:
-```
+---
 
-## test_doc_file_states_the_source_path
+## `def test_doc_file_states_the_source_path() -> None:`
 
-> The doc file opens with a heading carrying the source path.
+> The doc file opens with a monospaced heading carrying the source path.
 
-```python
-def test_doc_file_states_the_source_path() -> None:
-```
+---
 
-## test_doc_file_renders_the_module_docstring_in_full
+## `def test_doc_file_renders_the_module_docstring_in_full() -> None:`
 
 > The module docstring renders in full as a blockquote.
 
-```python
-def test_doc_file_renders_the_module_docstring_in_full() -> None:
-```
+---
 
-## test_members_render_in_model_order
+## `def test_members_render_in_model_order() -> None:`
 
 > Members render in the order the model lists them.
 
-```python
-def test_members_render_in_model_order() -> None:
-```
+---
 
-## test_decorators_render_above_the_signature_in_source_order
+## `def test_decorators_do_not_render() -> None:`
 
-> Decorator lines sit above the signature line inside the code block.
+> Decorator expressions appear nowhere in the rendered doc file.
 
-```python
-def test_decorators_render_above_the_signature_in_source_order() -> None:
-```
+---
 
-## test_undocumented_members_render_as_bare_signature_blocks
+## `def test_undocumented_members_render_as_a_bare_heading() -> None:`
 
-> A member without a docstring renders its heading and source block only.
+> A member without a docstring renders its heading alone.
 
-```python
-def test_undocumented_members_render_as_bare_signature_blocks() -> None:
-```
+---
 
-## test_docstring_renders_as_a_blockquote_above_the_src_block
+## `def test_docstring_renders_as_a_blockquote_under_the_heading() -> None:`
 
-> A member's section is heading, docstring blockquote, then source block.
+> A member's section is its signature heading, then its docstring.
 
-```python
-def test_docstring_renders_as_a_blockquote_above_the_src_block() -> None:
-```
+---
 
-## test_visibility_filter_applies_during_rendering
+## `def test_visibility_filter_applies_during_rendering() -> None:`
 
 > Private members are omitted and constructors render by default.
 
-```python
-def test_visibility_filter_applies_during_rendering() -> None:
-```
+---
 
-## test_file_include_privates_renders_private_members
+## `def test_file_include_privates_renders_private_members() -> None:`
 
 > With the private flag, underscore-prefixed members render too.
 
-```python
-def test_file_include_privates_renders_private_members() -> None:
-```
+---
 
-## test_nested_members_render_under_deeper_headings
+## `def test_nested_members_render_under_deeper_headings() -> None:`
 
 > Class members render after their class, one heading level deeper.
 
-```python
-def test_nested_members_render_under_deeper_headings() -> None:
-```
+---
 
-## test_heading_level_mirrors_nesting_depth
+## `def test_heading_level_mirrors_nesting_depth() -> None:`
 
 > Members of a nested class render one heading level deeper still.
 
-```python
-def test_heading_level_mirrors_nesting_depth() -> None:
-```
+---
 
-## test_heading_level_bottoms_out_at_h6
+## `def test_heading_level_bottoms_out_at_h6() -> None:`
 
 > Members beyond H6 depth reuse H6 rather than growing further.
 
-```python
-def test_heading_level_bottoms_out_at_h6() -> None:
-```
+---
 
-## test_member_depth_one_renders_module_level_members_only
+## `def test_member_depth_one_renders_module_level_members_only() -> None:`
 
 > Depth one renders classes without their bodies.
 
-```python
-def test_member_depth_one_renders_module_level_members_only() -> None:
-```
+---
 
-## test_member_depth_caps_nested_members_entirely
+## `def test_member_depth_caps_nested_members_entirely() -> None:`
 
 > Members below the cap render nowhere, nested members included.
 
-```python
-def test_member_depth_caps_nested_members_entirely() -> None:
-```
+---
 
-## test_signatures_off_renders_headings_and_docstrings_only
+## `def test_signatures_off_collapses_empty_argument_lists() -> None:`
 
-> Without signatures, documented members render heading and docstring.
+> Without signatures, an empty argument list renders as `()`.
 
-```python
-def test_signatures_off_renders_headings_and_docstrings_only() -> None:
-```
+---
 
-## test_docstring_passes_through_unchanged_inside_the_blockquote
+## `def test_thematic_breaks_separate_top_level_members() -> None:`
+
+> A break sits between top-level members, not after the last or inside.
+
+---
+
+## `def test_a_single_member_renders_no_thematic_break() -> None:`
+
+> With one top-level member no thematic break renders at all.
+
+---
+
+## `def test_signatures_off_collapses_arguments_into_an_ellipsis() -> None:`
+
+> Without signatures, a populated argument list renders as `(...)`.
+>
+> A hidden signature must not suggest an arity, so nested parentheses in
+> defaults collapse the same as plain arguments; the return annotation
+> renders only with signatures on.
+
+---
+
+## `def test_signatures_off_collapses_class_bases_into_an_ellipsis() -> None:`
+
+> Without signatures, class bases render as `(...)` in the heading.
+
+---
+
+## `def test_docstring_passes_through_unchanged_inside_the_blockquote() -> None:`
 
 > Markdown constructs and backticks in a docstring are not transformed.
-
-```python
-def test_docstring_passes_through_unchanged_inside_the_blockquote() -> None:
-```
-
-## test_fence_extends_past_backtick_runs_in_the_src_block
-
-> The source fence grows beyond the longest backtick run in the text.
-
-```python
-def test_fence_extends_past_backtick_runs_in_the_src_block() -> None:
-```
-
-## test_fence_extends_past_the_longest_of_several_runs
-
-> The fence exceeds the longest backtick run, not just any run.
-
-```python
-def test_fence_extends_past_the_longest_of_several_runs() -> None:
-```

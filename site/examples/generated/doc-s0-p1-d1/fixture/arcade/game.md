@@ -1,11 +1,11 @@
-# fixture/arcade/game.py
+# `fixture/arcade/game.py`
 
 > The shared move and game types every arcade game builds on.
 >
 > Each game describes its own rules and reports legal moves as `Move`
 > records, so player code can be written once and shared across games.
 
-## Move
+## `class Move:`
 
 > One legal move in a game.
 >
@@ -14,7 +14,9 @@
 >     target: The position the acting piece lands on.
 >     captures: The positions of any pieces the move removes.
 
-## Game
+---
+
+## `class Game:`
 
 > A turn-based game that can report and apply its own moves.
 >

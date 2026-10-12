@@ -43,6 +43,7 @@ _FENCE = re.compile(r"^```")
 _HEADING = re.compile(r"^(#{1,4}) (.+)$")
 _QUOTE = re.compile(r"^>(?: (.*))?$")
 _LIST = re.compile(r"^( *)- (.+)$")
+_HR = re.compile(r"-{3,}")
 _CODE_SPAN = re.compile(r"`([^`]+)`")
 _LINK_MD = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
 _STRONG = re.compile(r"\*\*([^*]+)\*\*")
@@ -231,35 +232,30 @@ class _Renderer:
             else:
                 self.emit_fence(self.fence)
                 self.fence = None
-            return
-        if _FENCE.match(line):
+        elif _FENCE.match(line):
             self.close_flow()
             self.fence = []
-            return
-        heading = _HEADING.match(line)
-        if heading:
+        elif (heading := _HEADING.match(line)) is not None:
             self.close_flow()
             depth = len(heading.group(1))
             self.result.append(f"<h{depth}>{self.inline(heading.group(2))}</h{depth}>")
-            return
-        quote = _QUOTE.match(line)
-        if quote:
+        elif _HR.fullmatch(line.strip()):
+            self.close_flow()
+            self.result.append("<hr>")
+        elif (quote := _QUOTE.match(line)) is not None:
             self.close_paragraph()
             self.close_list()
             self.feed_quote(quote)
-            return
-        item = _LIST.match(line)
-        if item:
+        elif (item := _LIST.match(line)) is not None:
             self.close_paragraph()
             self.close_quote()
             self.add_list_item(len(item.group(1)) // 2, item.group(2))
-            return
-        if not line.strip():
+        elif not line.strip():
             self.close_flow()
-            return
-        self.close_quote()
-        self.close_list()
-        self.paragraph.append(line)
+        else:
+            self.close_quote()
+            self.close_list()
+            self.paragraph.append(line)
 
     def feed_quote(self, quote: re.Match[str]) -> None:
         """Route one quote line: text joins, a bare line splits paragraphs."""
@@ -284,7 +280,8 @@ def render_markdown(text: str, *, link_prefix: str = "", doc_dir: str = "") -> s
     """Return the artifact's Markdown rendered as HTML.
 
     Covers the grammar the artifact emits: headings, blockquote
-    docstrings, fenced code blocks, nested lists, and inline markup.
+    docstrings, fenced code blocks, thematic breaks, nested lists,
+    and inline markup.
     Link targets resolve against `doc_dir`, the file's directory
     inside its variant, then gain `link_prefix` so they point at the
     published variant tree.

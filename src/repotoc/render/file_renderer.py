@@ -13,9 +13,6 @@ if TYPE_CHECKING:
 
 Member = Function | Class
 
-# Indentation step mirroring one class-nesting level inside a code block.
-_INDENT = "    "
-
 # Deepest heading Markdown defines; members at deeper nesting reuse it.
 _MAX_HEADING = 6
 
@@ -37,14 +34,16 @@ def has_doc(module: Module, filters: Filters) -> bool:
 def render_doc(module: Module, filters: Filters, config: RenderConfig) -> str:
     """Render one module model into its doc file text.
 
-    The doc file states the source path as a heading, renders the module
-    docstring in full as a blockquote, then outlines the visible members in
-    model order.
+    The doc file states the source path as a monospaced heading, renders the
+    module docstring in full as a blockquote, then outlines the visible
+    members in model order, a thematic break between top-level members.
     """
-    sections = [markdown.heading(module.source_path, 1)]
+    sections = [markdown.heading(f"`{module.source_path}`", 1)]
     if module.docstring is not None:
         sections.append(markdown.blockquote(module.docstring))
-    for member in filters.visible_members(module.members):
+    for index, member in enumerate(filters.visible_members(module.members)):
+        if index:
+            sections.append(markdown.horizontal_rule())
         sections += _member_sections(member, config, 0)
     return "\n\n".join(sections) + "\n"
 
@@ -53,21 +52,23 @@ def _member_sections(member: Member, config: RenderConfig, classes: int) -> list
     """Render one member and its nested members as sections of a doc file.
 
     A section is a heading naming the member, its docstring as a blockquote,
-    then its source as a fenced Python block when `file_include_signatures` is
-    on. The heading level grows with the number of enclosing classes, clamped
-    at H6; the source block carries one indentation step per level, mirroring
-    the source. `file_member_depth` caps the outline: a member below the cap
-    renders nowhere, its nested members included. Members arrive already
+    and nothing else. With `file_include_signatures` the heading carries the
+    member's full signature line, `def`/`class` prefix included; without it,
+    the prefix, the name, and a collapsed argument list: `()` when the member
+    takes no arguments, `(...)` when it does, none when a class declares no
+    bases. The heading level grows with the number of enclosing classes,
+    clamped at H6. `file_member_depth` caps the outline: a member below the
+    cap renders nowhere, its nested members included. Members arrive already
     filtered; rendering applies no visibility logic.
     """
     depth = config.file_member_depth
     if depth is not None and classes + 1 > depth:
         return []
-    sections = [markdown.heading(member.name, _heading_level(classes))]
+    sections = [
+        markdown.heading(_member_heading(member, config), _heading_level(classes))
+    ]
     if member.docstring is not None:
         sections.append(markdown.blockquote(member.docstring))
-    if config.file_include_signatures:
-        sections.append(markdown.code_block(_member_src(member, classes)))
     if isinstance(member, Class):
         for child in member.members:
             sections += _member_sections(child, config, classes + 1)
@@ -83,13 +84,31 @@ def _heading_level(classes: int) -> int:
     return min(classes + 2, _MAX_HEADING)
 
 
-def _member_src(member: Member, classes: int) -> str:
-    """Return the member's source lines: decorators above the signature.
+def _member_heading(member: Member, config: RenderConfig) -> str:
+    """Return the member's monospaced heading text.
 
-    The model stores decorator expressions without their `@` sigil; rendering
-    restores it so the block shows the decorators as written in the source.
+    Signatures on, the text is the normalized signature line as collected;
+    signatures off, it is the line with its argument list collapsed: `()`
+    when empty, `(...)` when arguments or bases exist, the bare head and
+    colon when a class declares neither, so a hidden signature never
+    suggests an arity.
     """
-    indent = _INDENT * classes
-    code_lines = [f"{indent}@{decorator}" for decorator in member.decorators]
-    code_lines.append(indent + member.signature)
-    return "\n".join(code_lines)
+    if config.file_include_signatures:
+        return f"`{member.signature}`"
+    return f"`{_short_signature(member.signature)}`"
+
+
+def _short_signature(signature: str) -> str:
+    """Return the definition line with its argument list collapsed.
+
+    The head keeps the `def`/`class` prefix and the name; the argument list
+    becomes `()` when empty or `(...)` otherwise, and the line closes with
+    the colon alone: the return annotation, like the rest of the signature
+    detail, renders only with signatures on. A class without bases has no
+    parenthesis pair and keeps its whole line.
+    """
+    open_index = signature.find("(")
+    if open_index == -1:
+        return signature
+    parens = "()" if signature[open_index + 1] == ")" else "(...)"
+    return signature[:open_index] + parens + ":"

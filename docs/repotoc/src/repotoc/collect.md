@@ -1,8 +1,8 @@
-# src/repotoc/collect.py
+# `src/repotoc/collect.py`
 
 > Collection layer: turn source roots into module models via static AST parsing.
 
-## collect
+## `def collect(roots: Iterable[str | Path], exclude: Iterable[str]=()) -> list[Module]:`
 
 > Collect module models from every Python file under the given roots.
 >
@@ -17,7 +17,3 @@
 > Raises:
 >     MissingRootError: A root does not exist.
 >     ParseError: A source file has a syntax error.
-
-```python
-def collect(roots: Iterable[str | Path], exclude: Iterable[str]=()) -> list[Module]:
-```

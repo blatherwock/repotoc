@@ -1,8 +1,8 @@
-# fixture/arcade/pong/paddle.py
+# `fixture/arcade/pong/paddle.py`
 
 > The paddles each side controls.
 
-## Paddle
+## `class Paddle:`
 
 > One player's paddle: fixed x, free to move in y.
 >

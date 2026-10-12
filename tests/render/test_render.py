@@ -16,7 +16,7 @@ def test_plain_module_renders_doc_file_and_root_index() -> None:
     files = render([module("mod.py")], RenderConfig(output="out"))
 
     assert set(files) == {"mod.md", "repotoc_toc.md"}
-    assert files["mod.md"].startswith("# mod.py\n")
+    assert files["mod.md"].startswith("# `mod.py`\n")
     assert (
         "- file: [`mod.py`](mod.md) ([source](../mod.py))\n" in files["repotoc_toc.md"]
     )
@@ -76,8 +76,8 @@ def test_init_with_visible_members_renders_a_doc_file_like_any_module() -> None:
 
     files = render([init], RenderConfig(output="out"))
 
-    assert "# pkg/__init__.py\n" in files["pkg/__init__.md"]
-    assert "## run\n" in files["pkg/__init__.md"]
+    assert "# `pkg/__init__.py`\n" in files["pkg/__init__.md"]
+    assert "## `def run():`\n" in files["pkg/__init__.md"]
     assert (
         "- file: [`__init__.py`](__init__.md) ([source](../../pkg/__init__.py))"
         ": Package doc.\n" in files["pkg/repotoc_toc.md"]

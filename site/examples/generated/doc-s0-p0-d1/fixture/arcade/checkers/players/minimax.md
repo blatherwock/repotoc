@@ -1,4 +1,4 @@
-# fixture/arcade/checkers/players/minimax.py
+# `fixture/arcade/checkers/players/minimax.py`
 
 > A minimax player that searches a few plies deep.
 >
@@ -6,7 +6,7 @@
 > positional heuristic. Nothing is pruned; checkers trees stay small
 > enough for a demo.
 
-## MinimaxPlayer
+## `class MinimaxPlayer:`
 
 > A player choosing moves by minimax over a board heuristic.
 >
