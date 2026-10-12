@@ -53,8 +53,8 @@ The tool's own artifact (`docs/repotoc/`) is unrelated to the site; `repotoc` ne
 - `.github/workflows/pages.yml` publishes the site using `actions/upload-pages-artifact` and `actions/deploy-pages`, with the `pages` write and `id-token` write permissions and a `github-pages` environment.
 - The workflow triggers on push of `v*` tags and on manual dispatch. It does not trigger on pushes to `main`.
 - The workflow runs the two freshness gates before uploading; a failing gate aborts the deploy and the live site keeps its previous version.
-- `site/CNAME` holds the custom domain `repotoc.blatherwocky.com`, so the artifact carries the domain on every deploy.
-- One-time setup, outside this repository: a DNS `CNAME` record `repotoc.blatherwocky.com` pointing to `blatherwock.github.io`, Pages source set to GitHub Actions in the repository settings, and HTTPS enforcement enabled once the certificate issues.
+- `site/CNAME` holds the custom domain `blatherwocky.com/repotoc/`, so the artifact carries the domain on every deploy.
+- One-time setup, outside this repository: a DNS `CNAME` record `blatherwocky.com/repotoc/` pointing to `blatherwock.github.io`, Pages source set to GitHub Actions in the repository settings, and HTTPS enforcement enabled once the certificate issues.
 
 ## Decisions
 
@@ -72,7 +72,7 @@ The tool's own artifact (`docs/repotoc/`) is unrelated to the site; `repotoc` ne
 
 **Examples are embedded by the build script, not hand-copied or rendered client-side.** Hand-copied examples drift silently from the tool's output; client-side Markdown rendering needs an external library or a janky custom renderer. The script rewrites only content between the marked blocks, so hand edits elsewhere are safe.
 
-**The site serves at `repotoc.blatherwocky.com`.** GitHub Pages cannot host a project site at a subpath of a custom domain, so each project takes a whole subdomain. Rejected a shared `workshop` subdomain with per-project subfolders: it needs a proxy layer in front of GitHub, which is out of scope for the MVP; revisit when a second project site exists.
+**The site serves at `blatherwocky.com/repotoc/`.** GitHub Pages cannot host a project site at a subpath of a custom domain, so each project takes a whole subdomain. Rejected a shared `workshop` subdomain with per-project subfolders: it needs a proxy layer in front of GitHub, which is out of scope for the MVP; revisit when a second project site exists.
 
 **The swap is CSS-only; the page ships no JavaScript.** Rejected client-side generation: it would re-implement the renderer and could drift from the tool. The same logic keeps Markdown rendering out of the browser: the build script renders the variant outputs to HTML at refresh time, so the swap swaps finished documents. Rejected TypeScript and JS test frameworks: both require a Node toolchain, and compiled output is not the hand-editable source. All logic stays in `src/tools/site_build.py`, inside the repository's unit test and coverage standards. A stateful future feature (for example the version picker) reopens this decision.
 

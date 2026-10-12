@@ -2,7 +2,7 @@
 
 ## Overview
 
-Implements `docs/planning/specs/0006-showcase-site.md`: a single-page GitHub Pages showcase committed under `site/`, a fixture arcade project whose `repotoc` outputs are pre-generated into a toggle matrix and embedded by `src/tools/site_build.py`, a CSS-only showcase swap with no JavaScript, `just` recipes for refresh and gating, and a tag-triggered Actions workflow publishing to `repotoc.blatherwocky.com`. Four phases: fixture, build script, page, wiring.
+Implements `docs/planning/specs/0006-showcase-site.md`: a single-page GitHub Pages showcase committed under `site/`, a fixture arcade project whose `repotoc` outputs are pre-generated into a toggle matrix and embedded by `src/tools/site_build.py`, a CSS-only showcase swap with no JavaScript, `just` recipes for refresh and gating, and a tag-triggered Actions workflow publishing to `blatherwocky.com/repotoc/`. Four phases: fixture, build script, page, wiring.
 
 ## Task list
 
@@ -38,7 +38,7 @@ Implements `docs/planning/specs/0006-showcase-site.md`: a single-page GitHub Pag
 ### Phase 3: Page
 
 - [x] Task 6: `index.html` skeleton
-  - The five sections (hero, showcase, configuration, CI gate, alternatives stub), toggle inputs (checkboxes: signatures, privates; radios: member depth, view, toc depth; defaults matching the tool), marker blocks for every embed (showcase source, eight doc variants, two index variants, each wrapped with a `data-variant` key), CDN font and reset links, `site/CNAME` with `repotoc.blatherwocky.com`, and `site/.nojekyll`. Relative asset URLs throughout.
+  - The five sections (hero, showcase, configuration, CI gate, alternatives stub), toggle inputs (checkboxes: signatures, privates; radios: member depth, view, toc depth; defaults matching the tool), marker blocks for every embed (showcase source, eight doc variants, two index variants, each wrapped with a `data-variant` key), CDN font and reset links, `site/CNAME` with `blatherwocky.com/repotoc/`, and `site/.nojekyll`. Relative asset URLs throughout.
   - Satisfies spec scenarios: site section requirements.
 - [x] Task 7: `style.css` and the CSS-only swap
   - `:has()`-based selectors map toggle states to `data-variant` blocks: three toggles select among the eight doc variants, the view and toc depth radios select among the two index variants, default variant visible on load. System font stack and reset fallbacks so content stays readable when CDN assets fail. Styled panels for the split view: source left, generated right.
