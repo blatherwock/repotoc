@@ -30,15 +30,16 @@ sources = ["src", "tests"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=src/repotoc"
+addopts = "--cov=src"
 
 [tool.coverage.run]
 branch = true
-source = ["src/repotoc"]
+source = ["src"]
 
 [tool.coverage.report]
 fail_under = 100
 show_missing = true
+exclude_also = ["if __name__ == .__main__.:"]
 
 [tool.ruff.lint]
 select = [
@@ -79,3 +80,4 @@ convention = "pep257"
 [tool.ruff.lint.per-file-ignores]
 "src/repotoc/collect.py" = ["TID251"]
 "src/repotoc/signatures.py" = ["TID251"]
+"site/examples/fixture/**" = ["D100", "D101", "D102", "D103", "D104", "D105", "D107", "TID252"]

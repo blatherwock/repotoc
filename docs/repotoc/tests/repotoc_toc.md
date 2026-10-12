@@ -13,4 +13,5 @@
 - file: [`test_filters.py`](test_filters.md) ([source](../../../tests/test_filters.py)): Tests for the rendering presentation filters and render config.
 - file: [`test_generate.py`](test_generate.md) ([source](../../../tests/test_generate.py)): Tests for generating the artifact into the output directory.
 - file: [`test_models.py`](test_models.md) ([source](../../../tests/test_models.py)): Tests for the collection model dataclasses.
+- file: [`test_site_build.py`](test_site_build.md) ([source](../../../tests/test_site_build.py)): Tests for the site showcase build script.
 - file: [`test_smoke.py`](test_smoke.md) ([source](../../../tests/test_smoke.py)): Smoke test: the package is importable.

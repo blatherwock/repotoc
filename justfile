@@ -57,6 +57,7 @@ fix *args: _require-image
     @{{container_prefix}}uv run ruff format {{args}}
     @{{container_prefix}}uv run ruff check --fix {{args}}
     @{{container_prefix}}uv run repotoc
+    @{{container_prefix}}uv run python src/tools/site_build.py refresh
 
 # Verify: check formatting, lint, types, and doc freshness. Read-only; the definition of done gate.
 check *args: _require-image
@@ -64,11 +65,21 @@ check *args: _require-image
     @{{container_prefix}}uv run ruff check {{args}}
     @{{container_prefix}}uv run ty check {{args}}
     @{{container_prefix}}uv run repotoc --check
+    @{{container_prefix}}uv run python src/tools/site_build.py check
 
 # Remove the container image (host only).
 clean:
     @{{host_only_error}}
     -docker image rm {{image}}
+
+# Serve the showcase site on http://127.0.0.1:8000 (host only).
+site: _require-image
+    @{{host_only_error}}
+    @{{docker_run}} -it -p 127.0.0.1:8000:8000 {{image}} python3 -m http.server 8000 --directory site
+
+# Regenerate the site example variants and embed them in the page.
+site-examples: _require-image
+    @{{container_prefix}}uv run python src/tools/site_build.py refresh
 
 # Install the git hooks via pre-commit (host only).
 hooks:

@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RepoTOC: a table of contents for Python repositories</title>
+  <meta name="description" content="RepoTOC writes a Markdown table of contents for a Python repository: every module, class, and function with its signature and docstring, in committed files that mirror the source tree. Coding agents read it to find their way without opening every source file.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/modern-normalize@2.0.0/modern-normalize.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Fira+Code:wght@400;600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="top">
+  <a class="brand" href=".">RepoTOC</a>
+  <div class="links">
+    <a href="#showcase">Output</a>
+    <a href="#agents">Agents</a>
+    <a href="#upkeep">Upkeep</a>
+    <a href="#comparison">Comparison</a>
+  </div>
+  <a class="github" href="https://github.com/blatherwock/repotoc">GitHub</a>
+</nav>
+
+<header class="hero">
+  <h1>Give a coding agent a table of contents for your Python code.</h1>
+  <p class="lede">
+    An agent in an unfamiliar repository spends much of its context reading
+    source files just to learn what exists and where. RepoTOC writes that
+    overview down: Markdown files that list every module, class, and
+    function with its signature and docstring, laid out like the source
+    tree. The agent starts at the root index, opens the module it needs,
+    and reads source only when it has to.
+  </p>
+  <p class="lede">
+    The files are committed with the code, so people read and review them
+    too. RepoTOC parses with the standard library <code>ast</code> module and
+    never imports or runs your code.
+  </p>
+  <div class="install">
+    <code>uv add --dev git+https://github.com/blatherwock/repotoc</code>
+    <span class="then">then</span>
+    <code>uv run repotoc</code>
+  </div>
+  <p class="more"><a href="https://github.com/blatherwock/repotoc">Source and docs on GitHub</a> &middot; MIT licensed</p>
+</header>
+
+<section id="showcase">
+  <h2>What it writes</h2>
+  <p>
+    RepoTOC writes one Markdown file for each Python file, in a folder tree
+    that mirrors the source tree. Each directory also gets a
+    <code>repotoc_toc.md</code>: an index of everything below it, with the
+    first line of each docstring. Below, a small example package on the
+    left and its output on the right.
+  </p>
+
+  <div class="trees">
+    <div class="pane">
+      <div class="pane-head">fixture/arcade/ &middot; source</div>
+      <pre class="tree"><code><!-- repotoc:begin tree-source -->
+arcade/
+├── __init__.py
+├── checkers/
+│   ├── __init__.py
+│   ├── board.py
+│   ├── players/
+│   │   ├── __init__.py
+│   │   ├── heuristic.py
+│   │   ├── <mark>minimax.py</mark>
+│   │   └── strategies/ …
+│   └── rules.py
+├── game.py
+├── pong/ …
+└── registry.py<!-- repotoc:end tree-source --></code></pre>
+    </div>
+    <div class="pane">
+      <div class="pane-head">docs/repotoc/fixture/arcade/ &middot; generated</div>
+      <pre class="tree"><code><!-- repotoc:begin tree-doc -->
+arcade/
+├── repotoc_toc.md
+├── checkers/
+│   ├── repotoc_toc.md
+│   ├── board.md
+│   ├── players/
+│   │   ├── repotoc_toc.md
+│   │   ├── heuristic.md
+│   │   ├── <mark>minimax.md</mark>
+│   │   └── strategies/ …
+│   └── rules.md
+├── game.md
+├── pong/ …
+└── registry.md<!-- repotoc:end tree-doc --></code></pre>
+    </div>
+    <div class="index-col">
+      <div class="toggles">
+        <div class="group">
+          <input type="radio" name="t-toc" id="t-toc-6" checked>
+          <label for="t-toc-6">index depth: 6</label>
+          <input type="radio" name="t-toc" id="t-toc-2">
+          <label for="t-toc-2">index depth: 2</label>
+        </div>
+      </div>
+      <div class="variant" data-t="6">
+        <div class="pane-head">arcade/repotoc_toc.md &middot; depth 6</div>
+        <div class="md"><!-- repotoc:begin toc-6 -->
+<h1>fixture/arcade</h1>
+<blockquote><p>A tiny arcade of classic games built on one shared move interface.</p></blockquote>
+<ul>
+<li>dir: <a href="examples/generated/toc-6/fixture/arcade/checkers/repotoc_toc.md"><code>checkers/</code></a> (<a href="examples/fixture/arcade/checkers/__init__.py">source</a>): Checkers: an eight-by-eight board game with forced captures.
+<ul>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/board.md"><code>board.py</code></a> (<a href="examples/fixture/arcade/checkers/board.py">source</a>): The checkers board: piece positions and the moves that change them.
+</li>
+<li>dir: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/repotoc_toc.md"><code>players/</code></a> (<a href="examples/fixture/arcade/checkers/players/__init__.py">source</a>): Players: move choosers that share one interface across games.
+<ul>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/heuristic.md"><code>heuristic.py</code></a> (<a href="examples/fixture/arcade/checkers/players/heuristic.py">source</a>): Board scoring for evaluating checkers positions.
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/minimax.md"><code>minimax.py</code></a> (<a href="examples/fixture/arcade/checkers/players/minimax.py">source</a>): A minimax player that searches a few plies deep.
+</li>
+<li>dir: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/strategies/repotoc_toc.md"><code>strategies/</code></a> (<a href="examples/fixture/arcade/checkers/players/strategies/__init__.py">source</a>)
+<ul>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/strategies/capture_first.md"><code>capture_first.py</code></a> (<a href="examples/fixture/arcade/checkers/players/strategies/capture_first.py">source</a>): A greedy player that always plays the first available capture.
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/players/strategies/random_move.md"><code>random_move.py</code></a> (<a href="examples/fixture/arcade/checkers/players/strategies/random_move.py">source</a>)
+</li></ul>
+</li></ul>
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/checkers/rules.md"><code>rules.py</code></a> (<a href="examples/fixture/arcade/checkers/rules.py">source</a>): Checkers move generation: forced captures and quiet moves.
+</li></ul>
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/game.md"><code>game.py</code></a> (<a href="examples/fixture/arcade/game.py">source</a>): The shared move and game types every arcade game builds on.
+</li>
+<li>dir: <a href="examples/generated/toc-6/fixture/arcade/pong/repotoc_toc.md"><code>pong/</code></a> (<a href="examples/fixture/arcade/pong/__init__.py">source</a>): Pong: two paddles, one ball, first to eleven points wins.
+<ul>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/pong/ball.md"><code>ball.py</code></a> (<a href="examples/fixture/arcade/pong/ball.py">source</a>): The pong ball and the bounce rules it obeys.
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/pong/match.md"><code>match.py</code></a> (<a href="examples/fixture/arcade/pong/match.py">source</a>): A pong match: serve, rally, and score until a side reaches eleven.
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/pong/paddle.md"><code>paddle.py</code></a> (<a href="examples/fixture/arcade/pong/paddle.py">source</a>): The paddles each side controls.
+</li></ul>
+</li>
+<li>file: <a href="examples/generated/toc-6/fixture/arcade/registry.md"><code>registry.py</code></a> (<a href="examples/fixture/arcade/registry.py">source</a>): Game registry: names mapped to factory functions.
+</li></ul><!-- repotoc:end toc-6 --></div>
+      </div>
+      <div class="variant" data-t="2">
+        <div class="pane-head">arcade/repotoc_toc.md &middot; depth 2</div>
+        <div class="md"><!-- repotoc:begin toc-2 -->
+<h1>fixture/arcade</h1>
+<blockquote><p>A tiny arcade of classic games built on one shared move interface.</p></blockquote>
+<ul>
+<li>dir: <a href="examples/generated/toc-2/fixture/arcade/checkers/repotoc_toc.md"><code>checkers/</code></a> (<a href="examples/fixture/arcade/checkers/__init__.py">source</a>): Checkers: an eight-by-eight board game with forced captures.
+<ul>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/checkers/board.md"><code>board.py</code></a> (<a href="examples/fixture/arcade/checkers/board.py">source</a>): The checkers board: piece positions and the moves that change them.
+</li>
+<li>dir: <a href="examples/generated/toc-2/fixture/arcade/checkers/players/repotoc_toc.md"><code>players/</code></a> (<a href="examples/fixture/arcade/checkers/players/__init__.py">source</a>): Players: move choosers that share one interface across games.
+</li>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/checkers/rules.md"><code>rules.py</code></a> (<a href="examples/fixture/arcade/checkers/rules.py">source</a>): Checkers move generation: forced captures and quiet moves.
+</li></ul>
+</li>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/game.md"><code>game.py</code></a> (<a href="examples/fixture/arcade/game.py">source</a>): The shared move and game types every arcade game builds on.
+</li>
+<li>dir: <a href="examples/generated/toc-2/fixture/arcade/pong/repotoc_toc.md"><code>pong/</code></a> (<a href="examples/fixture/arcade/pong/__init__.py">source</a>): Pong: two paddles, one ball, first to eleven points wins.
+<ul>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/pong/ball.md"><code>ball.py</code></a> (<a href="examples/fixture/arcade/pong/ball.py">source</a>): The pong ball and the bounce rules it obeys.
+</li>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/pong/match.md"><code>match.py</code></a> (<a href="examples/fixture/arcade/pong/match.py">source</a>): A pong match: serve, rally, and score until a side reaches eleven.
+</li>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/pong/paddle.md"><code>paddle.py</code></a> (<a href="examples/fixture/arcade/pong/paddle.py">source</a>): The paddles each side controls.
+</li></ul>
+</li>
+<li>file: <a href="examples/generated/toc-2/fixture/arcade/registry.md"><code>registry.py</code></a> (<a href="examples/fixture/arcade/registry.py">source</a>): Game registry: names mapped to factory functions.
+</li></ul><!-- repotoc:end toc-2 --></div>
+      </div>
+    </div>
+  </div>
+
+  <h3>One module</h3>
+  <p>
+    The module <code>minimax.py</code> becomes <code>minimax.md</code>: the
+    docstrings, plus signatures if you want them. The source stays fixed;
+    each switch is a RepoTOC setting.
+  </p>
+
+  <div class="toggles">
+    <div class="group">
+      <input type="checkbox" id="t-sig" checked>
+      <label for="t-sig">signatures</label>
+      <input type="checkbox" id="t-priv">
+      <label for="t-priv">private members</label>
+      <span class="sep"></span>
+      <input type="radio" name="t-depth" id="t-depth-full" checked>
+      <label for="t-depth-full">depth: full</label>
+      <input type="radio" name="t-depth" id="t-depth-1">
+      <label for="t-depth-1">depth: 1</label>
+    </div>
+  </div>
+
+  <div class="split">
+    <div class="pane">
+      <div class="pane-head">arcade/checkers/players/minimax.py</div>
+      <pre><code><!-- repotoc:begin source -->
+"""A minimax player that searches a few plies deep.
+
+The search alternates sides ply by ply and scores leaves with the
+positional heuristic. Nothing is pruned; checkers trees stay small
+enough for a demo.
+"""
+
+from typing import TYPE_CHECKING
+
+from ..board import Board
+from ..rules import legal_moves
+from .heuristic import material, positional
+
+if TYPE_CHECKING:
+    from ...game import Move
+
+_MAX_DEPTH = 4
+
+
+class MinimaxPlayer:
+    """A player choosing moves by minimax over a board heuristic.
+
+    Attributes:
+        side: The side this player moves for.
+        depth: The search depth in plies.
+    """
+
+    def __init__(self, side: str, depth: int = _MAX_DEPTH) -&gt; None:
+        self.side = side
+        self.depth = depth
+
+    def choose(self, board: Board) -&gt; "Move | None":
+        """Return the move with the best minimax score, None if stuck."""
+        best = None
+        best_score = -999
+        for move in legal_moves(board, self.side):
+            score = self._search(_played(board, move), 1)
+            if score &gt; best_score:
+                best_score = score
+                best = move
+        return best
+
+    def _search(self, board: Board, ply: int) -&gt; int:
+        """Score a position recursively; higher is better for our side."""
+        if ply &gt;= self.depth:
+            return positional(board, self.side)
+        side = self.side if ply % 2 == 0 else _opponent(self.side)
+        scores = [
+            self._search(_played(board, move), ply + 1)
+            for move in legal_moves(board, side)
+        ]
+        if not scores:
+            return material(board, self.side)
+        if ply % 2 == 0:
+            return max(scores)
+        return min(scores)
+
+
+def _played(board: Board, move: "Move") -&gt; Board:
+    """Return a copy of the board with the move applied."""
+    worked = Board(dict(board.pieces))
+    worked.apply(move)
+    return worked
+
+
+def _opponent(side: str) -&gt; str:
+    """Return the other side's name."""
+    return "light" if side == "dark" else "dark"
+<!-- repotoc:end source --></code></pre>
+    </div>
+
+    <div class="variants">
+      <div class="variant" data-s="1" data-p="0" data-d="f">
+        <div class="pane-head">minimax.md &middot; signatures on &middot; privates off &middot; depth full</div>
+        <div class="md"><!-- repotoc:begin doc-s1-p0-df -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<pre class="code">class MinimaxPlayer:</pre>
+<h3>__init__</h3>
+<pre class="code">    def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</pre>
+<h3>choose</h3>
+<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
+<pre class="code">    def choose(self, board: Board) -&gt; 'Move | None':</pre><!-- repotoc:end doc-s1-p0-df --></div>
+      </div>
+      <div class="variant" data-s="1" data-p="0" data-d="1">
+        <div class="pane-head">minimax.md &middot; signatures on &middot; privates off &middot; depth 1</div>
+        <div class="md"><!-- repotoc:begin doc-s1-p0-d1 -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<pre class="code">class MinimaxPlayer:</pre><!-- repotoc:end doc-s1-p0-d1 --></div>
+      </div>
+      <div class="variant" data-s="1" data-p="1" data-d="f">
+        <div class="pane-head">minimax.md &middot; signatures on &middot; privates on &middot; depth full</div>
+        <div class="md"><!-- repotoc:begin doc-s1-p1-df -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<pre class="code">class MinimaxPlayer:</pre>
+<h3>__init__</h3>
+<pre class="code">    def __init__(self, side: str, depth: int=_MAX_DEPTH) -&gt; None:</pre>
+<h3>choose</h3>
+<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
+<pre class="code">    def choose(self, board: Board) -&gt; 'Move | None':</pre>
+<h3>_search</h3>
+<blockquote><p>Score a position recursively; higher is better for our side.</p></blockquote>
+<pre class="code">    def _search(self, board: Board, ply: int) -&gt; int:</pre>
+<h2>_played</h2>
+<blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
+<pre class="code">def _played(board: Board, move: 'Move') -&gt; Board:</pre>
+<h2>_opponent</h2>
+<blockquote><p>Return the other side's name.</p></blockquote>
+<pre class="code">def _opponent(side: str) -&gt; str:</pre><!-- repotoc:end doc-s1-p1-df --></div>
+      </div>
+      <div class="variant" data-s="1" data-p="1" data-d="1">
+        <div class="pane-head">minimax.md &middot; signatures on &middot; privates on &middot; depth 1</div>
+        <div class="md"><!-- repotoc:begin doc-s1-p1-d1 -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<pre class="code">class MinimaxPlayer:</pre>
+<h2>_played</h2>
+<blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
+<pre class="code">def _played(board: Board, move: 'Move') -&gt; Board:</pre>
+<h2>_opponent</h2>
+<blockquote><p>Return the other side's name.</p></blockquote>
+<pre class="code">def _opponent(side: str) -&gt; str:</pre><!-- repotoc:end doc-s1-p1-d1 --></div>
+      </div>
+      <div class="variant" data-s="0" data-p="0" data-d="f">
+        <div class="pane-head">minimax.md &middot; signatures off &middot; privates off &middot; depth full</div>
+        <div class="md"><!-- repotoc:begin doc-s0-p0-df -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<h3>__init__</h3>
+<h3>choose</h3>
+<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote><!-- repotoc:end doc-s0-p0-df --></div>
+      </div>
+      <div class="variant" data-s="0" data-p="0" data-d="1">
+        <div class="pane-head">minimax.md &middot; signatures off &middot; privates off &middot; depth 1</div>
+        <div class="md"><!-- repotoc:begin doc-s0-p0-d1 -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote><!-- repotoc:end doc-s0-p0-d1 --></div>
+      </div>
+      <div class="variant" data-s="0" data-p="1" data-d="f">
+        <div class="pane-head">minimax.md &middot; signatures off &middot; privates on &middot; depth full</div>
+        <div class="md"><!-- repotoc:begin doc-s0-p1-df -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<h3>__init__</h3>
+<h3>choose</h3>
+<blockquote><p>Return the move with the best minimax score, None if stuck.</p></blockquote>
+<h3>_search</h3>
+<blockquote><p>Score a position recursively; higher is better for our side.</p></blockquote>
+<h2>_played</h2>
+<blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
+<h2>_opponent</h2>
+<blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s0-p1-df --></div>
+      </div>
+      <div class="variant" data-s="0" data-p="1" data-d="1">
+        <div class="pane-head">minimax.md &middot; signatures off &middot; privates on &middot; depth 1</div>
+        <div class="md"><!-- repotoc:begin doc-s0-p1-d1 -->
+<h1>fixture/arcade/checkers/players/minimax.py</h1>
+<blockquote><p>A minimax player that searches a few plies deep.</p><p>The search alternates sides ply by ply and scores leaves with the positional heuristic. Nothing is pruned; checkers trees stay small enough for a demo.</p></blockquote>
+<h2>MinimaxPlayer</h2>
+<blockquote><p>A player choosing moves by minimax over a board heuristic.</p><p>Attributes:     side: The side this player moves for.     depth: The search depth in plies.</p></blockquote>
+<h2>_played</h2>
+<blockquote><p>Return a copy of the board with the move applied.</p></blockquote>
+<h2>_opponent</h2>
+<blockquote><p>Return the other side's name.</p></blockquote><!-- repotoc:end doc-s0-p1-d1 --></div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<section id="agents">
+  <h2>Pointing an agent at it</h2>
+  <p>
+    RepoTOC only writes files. To have an agent use them, add a short
+    instruction to <code>AGENTS.md</code> or your tool's equivalent:
+  </p>
+  <pre class="snippet"><code>Consult the table of contents under `docs/repotoc/` before searching or reading source files:
+start at `docs/repotoc/repotoc_toc.md`, the linked outline of the whole repository with one-line
+summaries, and open a module's doc file to survey its API before reading the source itself.</code></pre>
+  <p>
+    RepoTOC uses this on itself. See its
+    <a href="https://github.com/blatherwock/repotoc/blob/main/AGENTS.md">AGENTS.md</a>
+    and the generated
+    <a href="https://github.com/blatherwock/repotoc/blob/main/docs/repotoc/repotoc_toc.md">docs/repotoc</a>.
+  </p>
+</section>
+
+<section id="upkeep">
+  <h2>Keeping it current</h2>
+  <p>
+    A stale table of contents misleads an agent, so RepoTOC is built to be
+    regenerated often and checked in review:
+  </p>
+  <ul>
+    <li>A <a href="https://github.com/blatherwock/repotoc#pre-commit">pre-commit hook</a> regenerates the files on each commit that changes Python code.</li>
+    <li><code>repotoc --check</code> exits nonzero when the files are out of date, for use in CI.</li>
+    <li>The same source always produces the same output, so a diff of the files shows only what changed in the code.</li>
+  </ul>
+  <p>
+    Settings such as source roots, output directory, and what to include
+    live under <code>[tool.repotoc]</code> in <code>pyproject.toml</code>.
+    See the <a href="https://github.com/blatherwock/repotoc#configuration">README</a>
+    for the full list.
+  </p>
+</section>
+
+<section id="comparison">
+  <h2>Compared with other tools</h2>
+  <p>
+    RepoTOC overlaps with three kinds of tools. It does a narrower job than
+    each of them.
+  </p>
+  <table>
+    <thead>
+      <tr><th>Tools</th><th>What they produce</th><th>How RepoTOC differs</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Sphinx, MkDocs with mkdocstrings</td>
+        <td>A documentation website for the users of a library.</td>
+        <td>RepoTOC builds no site. Its output is read inside the repository by the people and agents working on the code. Use both if you publish docs.</td>
+      </tr>
+      <tr>
+        <td>lazydocs, pydoc-markdown</td>
+        <td>Markdown API reference from docstrings.</td>
+        <td>Closest in output. RepoTOC adds a linked index per directory with a one-line summary per entry, so a reader goes from the root to one function in a few steps. Unlike lazydocs, it never imports the code.</td>
+      </tr>
+      <tr>
+        <td>Aider's repo map, Repomix</td>
+        <td>Context built for a model when it is needed: a ranked list of definitions (Aider) or the whole repository packed into one file (Repomix).</td>
+        <td>RepoTOC output is a set of files on disk, not one prompt, so an agent reads only the parts it needs. It is committed and reviewed like code, and its text is the docstrings the authors wrote.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The first two groups work best when docstrings follow a structured style
+    (Google, NumPy, or reST). RepoTOC asks for none. It writes each
+    docstring as it is, and uses the first line as the summary in indexes.
+    A member with no docstring is still listed.
+  </p>
+</section>
+
+<footer>
+  <p>
+    RepoTOC &middot; MIT &middot;
+    <a href="https://github.com/blatherwock/repotoc">github.com/blatherwock/repotoc</a>
+  </p>
+</footer>
+
+</body>
+</html>

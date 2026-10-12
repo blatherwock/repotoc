@@ -16,6 +16,8 @@
       - file: [`markdown.py`](src/repotoc/render/markdown.md) ([source](../../src/repotoc/render/markdown.py)): Markdown emission helpers: headings, fences, blockquotes, link and list lines.
       - file: [`paths.py`](src/repotoc/render/paths.md) ([source](../../src/repotoc/render/paths.py)): Doc paths, source links, and directory chains for the artifact layout.
     - file: [`signatures.py`](src/repotoc/signatures.md) ([source](../../src/repotoc/signatures.py)): Normalized source form of function and class definition lines.
+  - dir: [`tools/`](src/tools/repotoc_toc.md)
+    - file: [`site_build.py`](src/tools/site_build.md) ([source](../../src/tools/site_build.py)): Refresh and gate the showcase site's example artifacts.
 - dir: [`tests/`](tests/repotoc_toc.md)
   - dir: [`render/`](tests/render/repotoc_toc.md)
     - file: [`builders.py`](tests/render/builders.md) ([source](../../tests/render/builders.py)): Model builders shared by the rendering tests.
@@ -30,4 +32,5 @@
   - file: [`test_filters.py`](tests/test_filters.md) ([source](../../tests/test_filters.py)): Tests for the rendering presentation filters and render config.
   - file: [`test_generate.py`](tests/test_generate.md) ([source](../../tests/test_generate.py)): Tests for generating the artifact into the output directory.
   - file: [`test_models.py`](tests/test_models.md) ([source](../../tests/test_models.py)): Tests for the collection model dataclasses.
+  - file: [`test_site_build.py`](tests/test_site_build.md) ([source](../../tests/test_site_build.py)): Tests for the site showcase build script.
   - file: [`test_smoke.py`](tests/test_smoke.md) ([source](../../tests/test_smoke.py)): Smoke test: the package is importable.

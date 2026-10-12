@@ -15,3 +15,5 @@
     - file: [`markdown.py`](repotoc/render/markdown.md) ([source](../../../src/repotoc/render/markdown.py)): Markdown emission helpers: headings, fences, blockquotes, link and list lines.
     - file: [`paths.py`](repotoc/render/paths.md) ([source](../../../src/repotoc/render/paths.py)): Doc paths, source links, and directory chains for the artifact layout.
   - file: [`signatures.py`](repotoc/signatures.md) ([source](../../../src/repotoc/signatures.py)): Normalized source form of function and class definition lines.
+- dir: [`tools/`](tools/repotoc_toc.md)
+  - file: [`site_build.py`](tools/site_build.md) ([source](../../../src/tools/site_build.py)): Refresh and gate the showcase site's example artifacts.
